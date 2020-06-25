@@ -265,4 +265,16 @@ ggsave(combsensplot, filename = "5_scenarios_sensitivity.png", dpi = 300, type =
 
 # Multi-Parameter Optimisation --------------------------------------------
 
+init <- c(S = 0.9999, I = 0.0001, R = 0, C = 0)
+times <- seq(0,365,by = 1)
+
+parms = c(gamma = 1/GenTime(3.3, 2.8),
+          scen = 0,
+          tstart = 71,
+          t_dur = 12*7,
+          R0Dec = 0.8)
+
+parameterspace <- expand.grid("trigday" = seq(0,175), "length" = seq(0,200))
+
+#For this use sapply - will need to create a function first 
 
