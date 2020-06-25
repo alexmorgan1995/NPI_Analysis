@@ -238,9 +238,9 @@ for(i in 1:3) {
     }
     
     if(names(sens)[i] == "t_dur") {
-      p1 <- p1 + labs(x = "Length of Intervention", y = "Peak I(t)", col = "Scenario") +
+      p1 <- p1 + labs(x = "Length of Intervention (Days)", y = "Peak I(t)", col = "Scenario") +
         scale_y_continuous(limits = c(0.02,0.125), expand = c(0,0)) + scale_x_continuous(limits = c(0,365),expand = c(0, 0)) 
-      p2 <- p2 + labs(x = "Length of Intervention", y = "Cumulative Incidence", col = "Scenario") +
+      p2 <- p2 + labs(x = "Length of Intervention (Days)", y = "Cumulative Incidence", col = "Scenario") +
         scale_y_continuous(limits = c(0,1),expand = c(0,0)) + scale_x_continuous(limits = c(0,365),expand = c(0, 0)) 
     }
     
