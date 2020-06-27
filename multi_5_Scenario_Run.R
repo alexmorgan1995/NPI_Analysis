@@ -75,7 +75,7 @@ SIRmulti <- function(time, state, parameters) {
   })
 } 
 
-# Multiple Intervention Case Study ----------------------------------------
+# Multiple Intervention Case Study - Trajectory ----------------------------------------
 
 # Run the Model
 
@@ -212,7 +212,56 @@ combplotmulti <- ggarrange(datalist[[1]], datalist[[2]], datalist[[3]], datalist
 
 ggsave(combplotmulti, filename = "5_scenarios_multi.png", dpi = 300, type = "cairo", width = 18, height = 10, units = "in")
 
-
 # Multiple Optimisations --------------------------------------------------
 
+optimdata <- expand.grid("tstart1" = seq(0,100, by = 2), "tstart2" = seq(0,100, by = 2))
+
+init <- c(S = 0.9999, I = 0.0001, R = 0, C = 0)
+times <- seq(0,400,by = 1)
+
+parms = c(gamma = 1/GenTime(3.3, 2.8),
+          scen = 0,
+          tstart1 = 71,
+          t_dur1 = 6*7,
+          tstart2 = 42,
+          t_dur2 = 6*7,
+          R0Dec = 0.8)
+
+optim <- data.frame(matrix(ncol = 6, nrow = nrow(optimdata)))
+
+for(i in 1:nrow(optimdata)) {
+  parms["tstart1"] <- optimdata[i,1]
+  parms["tstart2"] <- optimdata[i,2]
+  
+  parms["scen"] <- 1
+  
+  out <- data.frame(ode(y = init, func = SIRmulti, times = times, parms = parms))
+  optim[i,] <- c("peak" = max(out$I), "cum" = max(out$C), "scen" = parms[["scen"]], 
+                    "tstart1" = parms[["tstart1"]], "tstart2" = parms[["tstart2"]],
+                    "realstart2" = parms[["tstart1"]] + parms[["t_dur1"]] + parms[["tstart2"]])
+                 
+  print(i/nrow(optimdata))   
+  #Need to standardise the dataframe maybe
+}
+
+colnames(optim) <- c("peak", "cum", "scen", "tstart1", "tstart2", "realstart2")
+
+ggplot(optim, aes(x = tstart1, y = tstart2, fill= peak))  + geom_tile()  +
+  scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0, 0)) + theme_bw() +
+  theme(legend.position = "right", legend.title = element_text(size=14), legend.text=element_text(size=14),  axis.text=element_text(size=14),
+        axis.title.y=element_text(size=14),axis.title.x = element_text(size=14),  plot.title = element_text(size = 20, vjust = 3, hjust = -0.2, face = "bold"),
+        legend.spacing.x = unit(0.3, 'cm'), plot.margin=unit(c(0.5,0.4,0.4,0.4),"cm"), legend.key.height =unit(0.7, "cm"),
+        legend.key.width =  unit(0.5, "cm")) + 
+  labs(x = "Intervention 1 Trigger", y = "Intervention 2 Trigger", fill = "Peak I(t)", title = paste("Scenario", 1)) + 
+  scale_fill_viridis_c(direction = -1)
+
+
+ggplot(optim, aes(x = tstart1, y = tstart2, fill= cum))  + geom_tile()  +
+  scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0, 0)) + theme_bw() +
+  theme(legend.position = "right", legend.title = element_text(size=14), legend.text=element_text(size=14),  axis.text=element_text(size=14),
+        axis.title.y=element_text(size=14),axis.title.x = element_text(size=14),  plot.title = element_text(size = 20, vjust = 3, hjust = -0.2),
+        legend.spacing.x = unit(0.3, 'cm'), plot.margin=unit(c(0.5,0.4,0.4,0.4),"cm"), legend.key.height =unit(0.7, "cm"),
+        legend.key.width =  unit(0.5, "cm")) + 
+  labs(x = "Intervention Trigger", y = "Intervention Duration", fill = "Cumulative\nIncidence", title = "") + 
+  scale_fill_viridis_c(direction = -1, option = "magma") 
 
