@@ -301,8 +301,8 @@ for(j in 1:5) {
     
     p1 <- ggplot(scendata, aes(x = tstart, y = t_dur, fill= peak))  + geom_tile()  +
       scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0, 0)) + theme_bw() +
-      theme(legend.position = "right", legend.title = element_text(size=14), legend.text=element_text(size=14),  axis.text=element_text(size=14),
-            axis.title.y=element_text(size=14),axis.title.x = element_text(size=14),  plot.title = element_text(size = 20, vjust = 3, hjust = -0.2, face = "bold"),
+      theme(legend.position = "right", legend.title = element_text(size=15), legend.text=element_text(size=15),  axis.text=element_text(size=15),
+            axis.title.y=element_text(size=15),axis.title.x = element_text(size=15),  plot.title = element_text(size = 20, vjust = 3, hjust = -0.2, face = "bold"),
             legend.spacing.x = unit(0.3, 'cm'), plot.margin=unit(c(0.5,0.4,0.4,0.4),"cm"), legend.key.height =unit(0.7, "cm"),
             legend.key.width =  unit(0.5, "cm")) + 
       labs(x = "Intervention Trigger", y = "Intervention Duration", fill = "Peak I(t)", title = paste("Scenario", j)) + 
@@ -310,8 +310,8 @@ for(j in 1:5) {
     
     p2<- ggplot(scendata, aes(x = tstart, y = t_dur, fill = cum))  + geom_tile() +
       scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0, 0)) + theme_bw() +
-      theme(legend.position = "right", legend.title = element_text(size=14), legend.text=element_text(size=14),  axis.text=element_text(size=14),
-            axis.title.y=element_text(size=14),axis.title.x = element_text(size=14),  plot.title = element_text(size = 20, vjust = 3, hjust = -0.2),
+      theme(legend.position = "right", legend.title = element_text(size=15), legend.text=element_text(size=15),  axis.text=element_text(size=15),
+            axis.title.y=element_text(size=15),axis.title.x = element_text(size=15),  plot.title = element_text(size = 20, vjust = 3, hjust = -0.2),
             legend.spacing.x = unit(0.3, 'cm'), plot.margin=unit(c(0.5,0.4,0.4,0.4),"cm"), legend.key.height =unit(0.7, "cm"),
             legend.key.width =  unit(0.5, "cm")) + 
       labs(x = "Intervention Trigger", y = "Intervention Duration", fill = "Cumulative\nIncidence", title = "") + 
