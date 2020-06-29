@@ -141,8 +141,8 @@ for (z in 1:5) {
         theme(legend.position = "right", legend.title = element_text(size=15), legend.text=element_text(size=15),  axis.text=element_text(size=15),
               axis.title.y=element_text(size=15),axis.title.x = element_text(size=15),  plot.title = element_text(size = 20, vjust = 3, hjust = 0.5, face = "bold"),
               legend.spacing.x = unit(0.3, 'cm'), plot.margin=unit(c(0.5,0.4,0.4,0.4),"cm"), legend.key.height =unit(0.7, "cm"),
-              legend.key.width =  unit(0.5, "cm")) + labs(x = "Intervention 1 Trigger", y = "Intervention 2 Trigger", fill = "Cumulative\nIncidence", title = "") + 
-        scale_fill_viridis_c(direction = -1, option = "magma") + labs(x = "Intervention 1 Trigger", y = "Intervention 2 Trigger", fill = "Peak I(t)", 
+              legend.key.width =  unit(0.5, "cm")) + 
+        scale_fill_viridis_c(direction = -1, option = "magma") + labs(x = "Intervention 1 Trigger", y = "Intervention 2 Trigger", fill = "Cumulative\nIncidence", 
                                                                       title = paste0("Int 1 & 2 Duration: ", lengthdata[j,1], "/", lengthdata[j,2], " wks"))
       
       print(paste0("Scenario: ", z, " | Length Analysis: ", (j/nrow(lengthdata))*100, "%"))
@@ -216,7 +216,7 @@ for (z in 1:5) {
         theme(legend.position = "right", legend.title = element_text(size=15), legend.text=element_text(size=15),  axis.text=element_text(size=15),
               axis.title.y=element_text(size=15),axis.title.x = element_text(size=15),  plot.title = element_text(size = 20, vjust = 3, hjust = 0.5, face = "bold"),
               legend.spacing.x = unit(0.3, 'cm'), plot.margin=unit(c(0.5,0.4,0.4,0.4),"cm"), legend.key.height =unit(0.7, "cm"),
-              legend.key.width =  unit(0.5, "cm")) + labs(x = "Intervention 1 R0", y = "Intervention 2 R0", fill = "Peak I(t)", 
+              legend.key.width =  unit(0.5, "cm")) + labs(x = bquote(.(Intervention ~ 1 ~ R[0])), y = bquote(.(Intervention ~ 2 ~ R[0])), fill = "Peak I(t)", 
                                                           title = paste0("Int 1 & 2 Duration: ", lengthdata[j,1], "/", lengthdata[j,2], " weeks")) + 
         scale_fill_viridis_c(direction = -1)
       
@@ -225,8 +225,8 @@ for (z in 1:5) {
         theme(legend.position = "right", legend.title = element_text(size=15), legend.text=element_text(size=15),  axis.text=element_text(size=15),
               axis.title.y=element_text(size=15),axis.title.x = element_text(size=15),  plot.title = element_text(size = 20, vjust = 3, hjust = 0.5, face = "bold"),
               legend.spacing.x = unit(0.3, 'cm'), plot.margin=unit(c(0.5,0.4,0.4,0.4),"cm"), legend.key.height =unit(0.7, "cm"),
-              legend.key.width =  unit(0.5, "cm")) + labs(x = "Intervention 1 R0", y = "Intervention 2 R0", fill = "Cumulative\nIncidence", title = "") + 
-        scale_fill_viridis_c(direction = -1, option = "magma") + labs(x = "Intervention 1 Trigger", y = "Intervention 2 Trigger", fill = "Peak I(t)", 
+              legend.key.width =  unit(0.5, "cm")) + scale_fill_viridis_c(direction = -1, option = "magma") + 
+        labs(x = bquote(.(Intervention ~ 1 ~ R[0])), y = bquote(.(Intervention ~ 2 ~ R[0])), fill = "Cumulative\nIncidence", 
                                                                       title = paste0("Int 1 & 2 Duration: ", lengthdata[j,1], "/", lengthdata[j,2], " wks"))
       
       print(paste0("Scenario: ", z, " | Length Analysis: ", (j/nrow(lengthdata))*100, "%"))
