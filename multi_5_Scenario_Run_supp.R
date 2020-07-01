@@ -158,7 +158,7 @@ for(j in 1:5) {
     for(z in 1:length(r0range)) {
       scendata <- data.frame(matrix(nrow = nrow(parameterspace), ncol = 6))
       
-      parms["R0Dec"] <- c(0, 0.5, 1)[z]
+      parms["R0Dec"] <- c(0.2, 0.6, 1)[z]
       
       for(i in 1:nrow(parameterspace)) {
         parms["tstart"] <- parameterspace[i,1]
@@ -169,14 +169,14 @@ for(j in 1:5) {
                           "tstart" = parms[["tstart"]], "t_dur" = parms[["t_dur"]], "r0" = parms[["R0Dec"]])
       }
       
-      print(paste0("Scenario ", j," | R0: ", c(0, 0.5, 1)[z]))
+      print(paste0("Scenario ", j," | R0: ", c(0.2, 0.6, 1)[z]))
       scendataframe <- rbind(scendataframe, scendata)
     }
     
     colnames(scendataframe) <- c("peak", "cum", "scen", "tstart", "t_dur","r0")
     
-    datalist <- list("p1data" = scendataframe[scendataframe$r0 == 0,],
-                     "p2data" = scendataframe[scendataframe$r0 == 0.5,],
+    datalist <- list("p1data" = scendataframe[scendataframe$r0 == 0.2,],
+                     "p2data" = scendataframe[scendataframe$r0 == 0.6,],
                      "p3data" = scendataframe[scendataframe$r0 == 1,])
     
     for(t in 1:3) { 
@@ -200,15 +200,15 @@ for(j in 1:5) {
       
       if(t == 1) {
         p1 <- p1 + labs(x = "Intervention Trigger", y = "Intervention Duration", fill = "Peak I(t)", title = paste0("Scenario ", j),
-                        subtitle = bquote("Intervention" ~ R[0]~"="~0))
+                        subtitle = bquote("Intervention" ~ R[0]~"="~0.2))
         p2 <- p2 + labs(x = "Intervention Trigger", y = "Intervention Duration", fill = "Cumulative\nIncidence", title = paste0("Scenario ", j),
-                        subtitle = bquote("Intervention" ~ R[0]~"="~0))
+                        subtitle = bquote("Intervention" ~ R[0]~"="~0.2))
       }
       if(t == 2) {
         p1 <- p1 + labs(x = "Intervention Trigger", y = "Intervention Duration", fill = "Peak I(t)", title = "",
-                        subtitle = bquote("Intervention" ~ R[0]~"="~0.5))
+                        subtitle = bquote("Intervention" ~ R[0]~"="~0.6))
         p2 <- p2 + labs(x = "Intervention Trigger", y = "Intervention Duration", fill = "Cumulative\nIncidence", title = "",
-                        subtitle = bquote("Intervention" ~ R[0]~"="~0.5))
+                        subtitle = bquote("Intervention" ~ R[0]~"="~0.6))
       }
       if(t == 3) {
         p1 <- p1 + labs(x = "Intervention Trigger", y = "Intervention Duration", fill = "Peak I(t)", title = "",
