@@ -5,11 +5,49 @@ setwd("C:/Users/amorg/Documents/PhD/nCoV Work/Figures/WriteUpAnalysis/supplement
 start_time <- Sys.time()
 
 # Model Functions ----------------------------------------------------------
+#Generation Time Function
 GenTime <- function(T2, R0) {
   G = T2 * ((R0-1)/log(2))
   return(G)
 }
 
+
+#Beta Function for Single Intervention
+combbeta <- function(scen, time, tstart, t_dur, R0Dec) {
+  gamma <- 1/GenTime(3.3, 2.8)
+  if(scen == 0) {
+    output <-  1.7*gamma
+  }
+  if(scen == 1) {
+    output <- ifelse((time >= tstart & time <= tstart + t_dur),
+                     R0Dec*gamma, 1.7*gamma)
+  }
+  if(scen == 2) {
+    R0lin <- approxfun(x=c(tstart, (tstart + t_dur)), y= c(R0Dec, 1.7), method="linear", rule =2)
+    output <- ifelse((time >= tstart & time <= tstart + t_dur),
+                     R0lin(time)*gamma, 1.7*gamma)
+  }
+  if(scen == 3) {
+    R0lin <- approxfun(x=c(tstart, (tstart + t_dur)), y= c(1.7, R0Dec), method="linear", rule =2) 
+    output <- ifelse((time >= tstart & time <= tstart + t_dur),
+                     R0lin(time)*gamma, 1.7*gamma)
+  }
+  if(scen == 4) {
+    R0incdec <-approxfun(x=c(tstart, tstart+(t_dur/2), tstart+t_dur), y= c(1.7, R0Dec, 1.7), method="linear", rule =2)
+    output <- ifelse((time >= tstart & time <= tstart + t_dur),
+                     R0incdec(time)*gamma, 1.7*gamma)
+  }
+  if(scen == 5) {
+    output <- ifelse((time >= tstart & time <= tstart+(t_dur*0.16667)) | (time >= tstart+(t_dur*0.3333) & time <= tstart+(t_dur*0.5)) |
+                       (time >= tstart+(t_dur*0.6667) & time <= tstart+(t_dur*0.83333)), 
+                     R0Dec*gamma, 1.7*gamma)
+  }
+  return(output)
+}
+
+plot(seq(0,365),combbeta(5, seq(0,365), 71, 12*7, 0.8))
+
+#Beta Function for Repeated Intervention
 combbetamult <- function(scen, time, tstart1, t_dur1, tstart2, t_dur2, R0Dec1, R0Dec2) {
   gamma <- 1/GenTime(3.3, 2.8)
   if(scen == 0) {
@@ -66,8 +104,21 @@ combbetamult <- function(scen, time, tstart1, t_dur1, tstart2, t_dur2, R0Dec1, R
 plot(seq(0,365),combbetamult(5, seq(0,365), 71, 12*7, 20, 12*7, 0.8, 0.6))
 
 
+#SEIR set of ODEs - Single
+SIR <- function(time, state, parameters) {
+  with(as.list(c(state, parameters)), {
+    beta <- combbeta(scen, time, tstart, t_dur, R0Dec)
+    
+    dS = - beta*S*(I)
+    dI = beta*S*(I)- gamma*I
+    dR = gamma*I 
+    
+    dC = beta*S*I
+    return(list(c(dS, dI, dR, dC)))
+  })
+} 
 
-#SEIR set of ODEs
+#SEIR set of ODEs - Repeated
 SIRmulti <- function(time, state, parameters) {
   with(as.list(c(state, parameters)), {
     beta <- combbetamult(scen, time, tstart1, t_dur1, tstart2, t_dur2, R0Dec1, R0Dec2)
@@ -80,6 +131,113 @@ SIRmulti <- function(time, state, parameters) {
     return(list(c(dS, dI, dR, dC)))
   })
 } 
+
+# Single Intervention Sensitivity Analysis --------------------------------
+
+init <- c(S = 0.9999, I = 0.0001, R = 0, C = 0)
+times <- seq(0,365,by = 1)
+
+parms = c(gamma = 1/GenTime(3.3, 2.8),
+          scen = 0,
+          tstart = 71,
+          t_dur = 12*7,
+          R0Dec = 0.8)
+
+parameterspace <- expand.grid("trigday" = seq(0,100, by =5), "length" = seq(1,200, by =5))
+r0range <- c(0, 0.5, 1)
+
+scensens <- list()
+
+for(j in 1:5) {
+  
+  scensens[[j]] = local({
+    i = 0
+    scendataframe <- data.frame(matrix(nrow = 0, ncol = 6))
+    parms["scen"] <- j
+    
+    for(z in 1:length(r0range)) {
+      scendata <- data.frame(matrix(nrow = nrow(parameterspace), ncol = 6))
+      
+      parms["R0Dec"] <- c(0, 0.5, 1)[z]
+      
+      for(i in 1:nrow(parameterspace)) {
+        parms["tstart"] <- parameterspace[i,1]
+        parms["t_dur"] <- parameterspace[i,2] 
+        
+        out <- data.frame(ode(y = init, func = SIR, times = times, parms = parms))
+        scendata[i,] <- c("peak" = max(out$I), "cum" = max(out$C), "scen" = parms[["scen"]], 
+                          "tstart" = parms[["tstart"]], "t_dur" = parms[["t_dur"]], "r0" = parms[["R0Dec"]])
+      }
+      
+      print(paste0("Scenario ", j," | R0: ", c(0, 0.5, 1)[z]))
+      scendataframe <- rbind(scendataframe, scendata)
+    }
+    
+    colnames(scendataframe) <- c("peak", "cum", "scen", "tstart", "t_dur","r0")
+    
+    datalist <- list("p1data" = scendataframe[scendataframe$r0 == 0,],
+                     "p2data" = scendataframe[scendataframe$r0 == 0.5,],
+                     "p3data" = scendataframe[scendataframe$r0 == 1,])
+    
+    for(t in 1:3) { 
+      data <- datalist[[t]]
+      
+      p1 <- ggplot(data, aes(x = tstart, y = t_dur, fill= peak))  + geom_tile()  +
+        scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0, 0)) + theme_bw() +
+        theme(legend.position = "right", legend.title = element_text(size=15), legend.text=element_text(size=15),  axis.text=element_text(size=15),
+              axis.title.y=element_text(size=15), axis.title.x = element_text(size=15),  plot.title = element_text(size = 20, vjust = 2, hjust = - 0.2, face = "bold"),
+              plot.subtitle = element_text(size = 15, vjust = 2, hjust = 0.5, face = "bold"),
+              legend.spacing.x = unit(0.3, 'cm'), plot.margin=unit(c(0.5,0.4,0.4,0.4),"cm"), legend.key.height =unit(0.7, "cm"),
+              legend.key.width =  unit(0.5, "cm")) + scale_fill_viridis_c(direction = -1)
+      
+      p2 <- ggplot(data, aes(x = tstart, y = t_dur, fill = cum))  + geom_tile() +
+        scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0, 0)) + theme_bw() +
+        theme(legend.position = "right", legend.title = element_text(size=15), legend.text=element_text(size=15),  axis.text=element_text(size=15),
+              axis.title.y=element_text(size=15),axis.title.x = element_text(size=15),  plot.title = element_text(size = 20, vjust = 2, hjust = -0.2),
+              plot.subtitle = element_text(size = 15, vjust = 2, hjust = 0.5, face = "bold"),
+              legend.spacing.x = unit(0.3, 'cm'), plot.margin=unit(c(0.5,0.4,0.4,0.4),"cm"), legend.key.height =unit(0.7, "cm"),
+              legend.key.width =  unit(0.5, "cm")) + scale_fill_viridis_c(direction = -1, option = "magma") 
+      
+      if(t == 1) {
+        p1 <- p1 + labs(x = "Intervention Trigger", y = "Intervention Duration", fill = "Peak I(t)", title = paste0("Scenario ", j),
+                        subtitle = bquote("Intervention" ~ R[0]~"="~0))
+        p2 <- p2 + labs(x = "Intervention Trigger", y = "Intervention Duration", fill = "Cumulative\nIncidence", title = paste0("Scenario ", j),
+                        subtitle = bquote("Intervention" ~ R[0]~"="~0))
+      }
+      if(t == 2) {
+        p1 <- p1 + labs(x = "Intervention Trigger", y = "Intervention Duration", fill = "Peak I(t)", title = "",
+                        subtitle = bquote("Intervention" ~ R[0]~"="~0.5))
+        p2 <- p2 + labs(x = "Intervention Trigger", y = "Intervention Duration", fill = "Cumulative\nIncidence", title = "",
+                        subtitle = bquote("Intervention" ~ R[0]~"="~0.5))
+      }
+      if(t == 3) {
+        p1 <- p1 + labs(x = "Intervention Trigger", y = "Intervention Duration", fill = "Peak I(t)", title = "",
+                        subtitle = bquote("Intervention" ~ R[0]~"="~1))
+        p2 <- p2 + labs(x = "Intervention Trigger", y = "Intervention Duration", fill = "Cumulative\nIncidence", title = "",
+                        subtitle = bquote("Intervention" ~ R[0]~"="~1))
+      }
+      
+      assign(paste0("p",1,"peak",c(0, 5, 1)[t]), p1)
+      assign(paste0("p",1,"cum",c(0, 5, 1)[t]), p2)
+      
+    }
+    
+    combplotpeak <- ggarrange(p1peak0, p1peak5, p1peak1, ncol = 3, nrow = 1, widths = c(1,1,1), align = "h")
+    combplotcum <- ggarrange(p1cum0, p1cum5, p1cum1, ncol = 3, nrow = 1, widths = c(1,1,1), align = "h")
+    
+    return(list(combplotpeak,combplotcum))
+  })
+  
+}
+
+
+combplotsenspeak <- ggarrange(scensens[[1]][[1]],scensens[[2]][[1]],scensens[[3]][[1]],scensens[[4]][[1]],scensens[[5]][[1]],
+                              nrow = 5, ncol = 1)
+combplotsenscum <- ggarrange(scensens[[1]][[2]],scensens[[2]][[2]],scensens[[3]][[2]],scensens[[4]][[2]],scensens[[5]][[2]],
+                             nrow = 5, ncol = 1)
+
+ggsave(combplotsenspeak, filename = "R0_Heat_5_sensitivity_peak.png", dpi = 300, type = "cairo", width = 13, height = 16, units = "in")
+ggsave(combplotsenscum, filename = "R0_Heat_5_sensitivity_cum.png", dpi = 300, type = "cairo", width = 13, height = 16, units = "in")
 
 
 # Multiple Optimisations - Trigger + Length --------------------------------------------------
