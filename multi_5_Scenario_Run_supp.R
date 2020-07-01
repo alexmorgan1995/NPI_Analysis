@@ -193,7 +193,7 @@ for(j in 1:5) {
       p2 <- ggplot(data, aes(x = tstart, y = t_dur, fill = cum))  + geom_tile() +
         scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0, 0)) + theme_bw() +
         theme(legend.position = "right", legend.title = element_text(size=15), legend.text=element_text(size=15),  axis.text=element_text(size=15),
-              axis.title.y=element_text(size=15),axis.title.x = element_text(size=15),  plot.title = element_text(size = 20, vjust = 2, hjust = -0.2),
+              axis.title.y=element_text(size=15),axis.title.x = element_text(size=15),  plot.title = element_text(size = 20, vjust = 2, hjust = -0.2, face = "bold"),
               plot.subtitle = element_text(size = 15, vjust = 2, hjust = 0.5, face = "bold"),
               legend.spacing.x = unit(0.3, 'cm'), plot.margin=unit(c(0.5,0.4,0.4,0.4),"cm"), legend.key.height =unit(0.7, "cm"),
               legend.key.width =  unit(0.5, "cm")) + scale_fill_viridis_c(direction = -1, option = "magma") 
@@ -230,7 +230,6 @@ for(j in 1:5) {
   
 }
 
-
 combplotsenspeak <- ggarrange(scensens[[1]][[1]],scensens[[2]][[1]],scensens[[3]][[1]],scensens[[4]][[1]],scensens[[5]][[1]],
                               nrow = 5, ncol = 1)
 combplotsenscum <- ggarrange(scensens[[1]][[2]],scensens[[2]][[2]],scensens[[3]][[2]],scensens[[4]][[2]],scensens[[5]][[2]],
@@ -238,7 +237,6 @@ combplotsenscum <- ggarrange(scensens[[1]][[2]],scensens[[2]][[2]],scensens[[3]]
 
 ggsave(combplotsenspeak, filename = "R0_Heat_5_sensitivity_peak.png", dpi = 300, type = "cairo", width = 13, height = 16, units = "in")
 ggsave(combplotsenscum, filename = "R0_Heat_5_sensitivity_cum.png", dpi = 300, type = "cairo", width = 13, height = 16, units = "in")
-
 
 # Multiple Optimisations - Trigger + Length --------------------------------------------------
 
