@@ -1,6 +1,6 @@
 # Modelling Social Distancing Measures for COVID-19 Epidemic Control
 
-Repository for R code used to model social distancing measures.
+Repository for R code used to model social distancing measures **WORK IN PROGRESS**.
 
 ## Running the Code
 ### R 
@@ -11,19 +11,19 @@ The analysis has been split into R files relating to the single internvetion, mu
 
 ## Navigating the Repository 
 ### R
-R code can be found in the `Enhanced Shielding` folder and is organised according to the figures found in the main text and the supplementary material **WORK IN PROGRESS**. Current code is available for:
+R code can be found in the `Enhanced Shielding` folder and is organised according to the figures found in the main text and the supplementary material **WORK IN PROGRESS**. Current R code is available for:
 
 * Single Intervention Analysis - Modelling the effect of a single SDM intervention - `single_5_Scenario_Run.R`.
 	* Baseline trajectory plots.
- * Single parameter sensitivity analyses.
- * Multi-parameter sensitivity heatmap analyses. 
+	* Single parameter sensitivity analyses.
+ 	* Multi-parameter sensitivity heatmap analyses. 
  
 * Multiple/Double Intervention Analysis - Modelling the effect of a two SDM interventions - `multi_5_Scenario_Run.R`.
 	* Multi-parameter sensitivity heatmap analyses (Trigger date/R0/Length). 
  
 * Supplementary Material for Single and Multiple Intervention Analysis - `multi_5_Scenario_Run_supp.R`.
 	* Multi-parameter sensitivity heatmap analyses - Exploring higher dimension parameter space.
- * Exploratory trajectory plots.
+	* Exploratory trajectory plots.
 
 ## Programs and Packages Used
 COVID-19 modelling code was implemented using R (3.6.2) . ODEs were solved using the `desolve` (1.27.1) package in R and `odeint` in C++. Plotting in R was carried out using the `ggplot` package (3.3.0). Dataframe manipulation was performed using `reshape2` (1.4.4). Finalised plot output was performed using `ggpubr` (0.2.4), `ggarrange` () and `Cairo` (1.5-10) packages. 
