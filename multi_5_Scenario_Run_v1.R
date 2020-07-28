@@ -208,7 +208,7 @@ for(j in 1:length(seq(1,5))) {
     }
     
     combplot <- ggarrange(p1,p2,p3, nrow = 3, ncol = 1, common.legend = TRUE, legend = "none", align = "v",heights = c(1, 0.45, 0.5))
-    dump <- list(combplot, plotdata, plotbeta, plotre)
+    dump <- list(combplot, plotdata, max(out$C))
     return(dump)
   })
 }
@@ -217,6 +217,13 @@ combplotmulti <- ggarrange(datalist[[1]][[1]], datalist[[2]][[1]], datalist[[3]]
                            legend = "none", align = "h")
 
 ggsave(combplotmulti, filename = "5_scenarios_multi.png", dpi = 300, type = "cairo", width = 18, height = 10, units = "in")
+
+for(i in 1:5) {
+  print(datalist[[i]][[2]][datalist[[i]][[2]]$group == "scenario",]
+        [which.max(datalist[[i]][[2]]$value[datalist[[i]][[2]]$group == "scenario"]),])
+  print(datalist[[i]][[3]])
+}
+
 
 # Multiple Optimisations - Trigger Date --------------------------------------------------
 

@@ -165,14 +165,22 @@ for(j in 1:length(seq(1,5))) {
     }
     
     combplot <- ggarrange(p1,p2,p3, nrow = 3, ncol = 1, common.legend = TRUE, legend = "none", align = "v",heights = c(1, 0.45, 0.5))
-    return(combplot)
+    dump <- list(combplot, plotdata, max(out$C))
+    return(dump)
   })
 }
 
-combplot <- ggarrange(datalist[[1]], datalist[[2]], datalist[[3]], datalist[[4]], datalist[[5]],nrow = 1, ncol = 5, 
+combplot <- ggarrange(datalist[[1]][[1]], datalist[[2]][[1]], datalist[[3]][[1]], datalist[[4]][[1]], datalist[[5]][[1]],nrow = 1, ncol = 5, 
           legend = "none", align = "h")
 
 ggsave(combplot, filename = "5_scenarios.png", dpi = 300, type = "cairo", width = 18, height = 10, units = "in")
+
+for(i in 1:5) {
+print(datalist[[i]][[2]][datalist[[i]][[2]]$group == "scenario",]
+      [which.max(datalist[[i]][[2]]$value[datalist[[i]][[2]]$group == "scenario"]),])
+print(datalist[[i]][[3]])
+}
+
 
 # Sensitivity Analysis ----------------------------------------------------
 
@@ -229,21 +237,21 @@ for(i in 1:3) {
             legend.spacing.x = unit(0.3, 'cm'), plot.margin=unit(c(0.8,0.6,0.4,0.6),"cm")) + labs(x = names(sens)[i], y = "Cumulative Incidence", col = "Scenario")
     
     if(names(sens)[i] == "tstart") {
-      p1 <- p1 + labs(x = "Intervention Trigger (Days)", y = "Peak I(t)", col = "Scenario") +
+      p1 <- p1 + labs(x = "Intervention Trigger (Days)", y = "I(t) Peak", col = "Scenario") +
         scale_y_continuous(limits = c(0.02,0.150), expand = c(0,0)) + scale_x_continuous(limits = c(0,150),expand = c(0, 0)) 
       p2 <- p2 + labs(x = "Intervention Trigger (Days)", y = "Cumulative Incidence", col = "Scenario") +
         scale_y_continuous(limits = c(0,1), expand = c(0,0)) + scale_x_continuous(limits = c(0,150), expand = c(0, 0)) 
     }
     
     if(names(sens)[i] == "cmin") {
-      p1 <- p1 + labs(x = expression(Intervention ~ c[min]), y = "Peak I(t)", col = "Scenario") +
+      p1 <- p1 + labs(x = expression(Intervention ~ c[min]), y = "I(t) Peak", col = "Scenario") +
         scale_y_continuous(limits = c(0.02,0.150),expand = c(0,0)) + scale_x_continuous(limits = c(0,1),expand = c(0, 0)) 
       p2 <- p2 + labs(x = expression(Intervention ~ c[min]), y = "Cumulative Incidence", col = "Scenario") +
         scale_y_continuous(limits = c(0,1),expand = c(0,0)) + scale_x_continuous(limits = c(0,1),expand = c(0, 0)) 
     }
     
     if(names(sens)[i] == "t_dur") {
-      p1 <- p1 + labs(x = "Intervention Duration (Days)", y = "Peak I(t)", col = "Scenario") +
+      p1 <- p1 + labs(x = "Intervention Duration (Days)", y = "I(t) Peak", col = "Scenario") +
         scale_y_continuous(limits = c(0.001,0.150), expand = c(0,0)) + scale_x_continuous(limits = c(0,400),expand = c(0, 0)) 
       p2 <- p2 + labs(x = "Intervention Duration (Days)", y = "Cumulative Incidence", col = "Scenario") +
         scale_y_continuous(limits = c(0,1),expand = c(0,0)) + scale_x_continuous(limits = c(0,400),expand = c(0, 0)) 
@@ -309,7 +317,7 @@ for(j in 1:5) {
             axis.title.y=element_text(size=15),axis.title.x = element_text(size=15),  plot.title = element_text(size = 20, vjust = 3, hjust = -0.2, face = "bold"),
             legend.spacing.x = unit(0.3, 'cm'), plot.margin=unit(c(0.5,0.4,0.4,0.4),"cm"), legend.key.height =unit(0.7, "cm"),
             legend.key.width =  unit(0.5, "cm")) + 
-      labs(x = "Intervention Trigger", y = "Intervention Duration", fill = "Peak I(t)", title = paste("Scenario", j)) + 
+      labs(x = "Intervention Trigger", y = "Intervention Duration", fill = "I(t) Peak", title = paste("Scenario", j)) + 
       scale_fill_viridis_c(direction = -1)
     
     p2<- ggplot(scendata, aes(x = tstart, y = t_dur, fill = cum))  + geom_tile() +
