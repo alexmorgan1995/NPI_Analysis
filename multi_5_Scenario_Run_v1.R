@@ -223,7 +223,11 @@ for(i in 1:5) {
         [which.max(datalist[[i]][[2]]$value[datalist[[i]][[2]]$group == "scenario"]),])
   print(datalist[[i]][[3]])
 }
-
+for(i in 1:5) {
+  print(datalist[[i]][[2]][datalist[[i]][[2]]$group == "scenario",]
+        [which.max(datalist[[i]][[2]]$value[datalist[[i]][[2]]$group == "scenario"]),])
+  print(datalist[[i]][[3]])
+}
 
 # Multiple Optimisations - Trigger Date --------------------------------------------------
 
@@ -274,19 +278,19 @@ for(j in 1:5) {
       theme(legend.position = "right", legend.title = element_text(size=15), legend.text=element_text(size=15),  axis.text=element_text(size=15),
             axis.title.y=element_text(size=15),axis.title.x = element_text(size=15),  plot.title = element_text(size = 20, vjust = 3, hjust = -0.2, face = "bold"),
             legend.spacing.x = unit(0.3, 'cm'), plot.margin=unit(c(0.5,0.4,0.4,0.4),"cm"), legend.key.height =unit(0.7, "cm"),
-            legend.key.width =  unit(0.5, "cm")) + labs(x = "Intervention 1 Trigger", y = "Intervention 2 Trigger", fill = "I(t) Peak", 
+            legend.key.width =  unit(0.5, "cm")) + labs(x = bquote("Trigger Date 1 ("*italic(t[p1])*")"), y = bquote("Trigger Date 2 ("*italic(t[p2])*")"), fill = "I(t) Peak", 
                                                         title = paste("Scenario", j)) + 
-      scale_fill_viridis_c(direction = -1)
+      scale_fill_viridis_c(direction = -1, breaks=seq(0.04, 0.15, by = (0.15-0.04)/4), limits = c(0.04, 0.15))
     
     p2 <- ggplot(optim, aes(x = tstart1, y = tstart2, fill= cum))  + geom_tile()  +
       scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0, 0)) + theme_bw() +
       theme(legend.position = "right", legend.title = element_text(size=15), legend.text=element_text(size=15),  axis.text=element_text(size=15),
             axis.title.y=element_text(size=15),axis.title.x = element_text(size=15),  plot.title = element_text(size = 20, vjust = 3, hjust = 0.5, face = "bold"),
             legend.spacing.x = unit(0.3, 'cm'), plot.margin=unit(c(0.5,0.4,0.4,0.4),"cm"), legend.key.height =unit(0.7, "cm"),
-            legend.key.width =  unit(0.5, "cm")) + labs(x = "Intervention 1 Trigger", y = "Intervention 2 Trigger", fill = "Cumulative\nIncidence", title = "") + 
-      scale_fill_viridis_c(direction = -1, option = "magma")
+            legend.key.width =  unit(0.5, "cm")) + labs(x = bquote("Trigger Date 1 ("*italic(t[p1])*")"), y = bquote("Trigger Date 2 ("*italic(t[p2])*")"), fill = "Total\nCumulative\nIncidence", title = "") + 
+      scale_fill_viridis_c(direction = -1, option = "magma", breaks=seq(0.5, 0.8, by = (0.8-0.5)/4), limits = c(0.5, 0.8))
     
-    combplot <- ggarrange(p1,p2, ncol = 2, nrow = 1, widths = c(1,1.05), align = "h")
+    combplot <- ggarrange(p1,p2, ncol = 2, nrow = 1, widths = c(1,1), align = "h")
     
     print(paste0("Scenario: ", j, " Complete"))
     dump <- list(combplot, optim)
@@ -299,7 +303,7 @@ multicombplot <- ggarrange(outcomelist[[1]][[1]],outcomelist[[2]][[1]],outcomeli
 
 ggsave(multicombplot, filename = "Heat_5_multi_sensitivity_trig.png", dpi = 300, type = "cairo", width = 10, height = 16, units = "in")
 
-# Multiple Optimisations - R0 --------------------------------------------------
+# Multiple Optimisations - CMIN --------------------------------------------------
 
 cminoptim <- expand.grid("cmin1" = seq(0, 1, by = 0.05), "cmin2" = seq(0, 1, by = 0.05))
 
@@ -349,7 +353,7 @@ for(j in 1:5) {
             legend.spacing.x = unit(0.3, 'cm'), plot.margin=unit(c(0.5,0.4,0.4,0.4),"cm"), legend.key.height =unit(0.7, "cm"),
             legend.key.width =  unit(0.5, "cm")) + labs(x = bquote(.(Intervention ~ 1 ~ italic(c[min]))), y = bquote(.(Intervention ~ 2 ~ italic(c[min]))), fill = "I(t) Peak", 
                                                         title = paste("Scenario", j)) + 
-      scale_fill_viridis_c(direction = -1)
+      scale_fill_viridis_c(direction = -1) # , breaks=seq(0.04, 0.15, by = (0.15-0.04)/4), limits = c(0.04, 0.15)
     
     p2 <- ggplot(optim, aes(x = cmin1, y = cmin2, fill= cum))  + geom_tile()  +
       scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0, 0)) + theme_bw() +
@@ -357,10 +361,10 @@ for(j in 1:5) {
             axis.title.y=element_text(size=15),axis.title.x = element_text(size=15),  plot.title = element_text(size = 20, vjust = 3, hjust = 0.5, face = "bold"),
             legend.spacing.x = unit(0.3, 'cm'), plot.margin=unit(c(0.5,0.4,0.4,0.4),"cm"), legend.key.height =unit(0.7, "cm"),
             legend.key.width =  unit(0.5, "cm")) + 
-      scale_fill_viridis_c(direction = -1, option = "magma") + labs(x = bquote(.(Intervention ~ 1 ~ italic(c[min]))), y = bquote(.(Intervention ~ 2 ~ italic(c[min]))), 
-                                                                    fill = "Cumulative\nIncidence", title = "")
+      scale_fill_viridis_c(direction = -1, option = "magma") + #, breaks=seq(0.48, 0.8, by = (0.8-0.48)/4), limits = c(0.48, 0.8) 
+      labs(x = bquote(.(Intervention ~ 1 ~ italic(c[min]))), y = bquote(.(Intervention ~ 2 ~ italic(c[min]))), fill = "Total\nCumulative\nIncidence", title = "")
     
-    combplot <- ggarrange(p1,p2, ncol = 2, nrow = 1, widths = c(1,1.05), align = "h")
+    combplot <- ggarrange(p1,p2, ncol = 2, nrow = 1, widths = c(1,1), align = "h")
     
     print(paste0("Scenario: ", j, " Complete"))
     dump <- list(combplot, optim)

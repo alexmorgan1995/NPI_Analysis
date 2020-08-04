@@ -63,7 +63,6 @@ SIR <- function(time, state, parameters) {
   })
 } 
 
-
 # Baseline Model Analysis - 5 Scenarios -----------------------------------
 
 init <- c(S = 0.99999, I = 0.00001, R = 0, C = 0)
@@ -181,7 +180,6 @@ print(datalist[[i]][[2]][datalist[[i]][[2]]$group == "scenario",]
 print(datalist[[i]][[3]])
 }
 
-
 # Sensitivity Analysis ----------------------------------------------------
 
 init <- c(S = 0.99999, I = 0.00001, R = 0, C = 0)
@@ -237,23 +235,23 @@ for(i in 1:3) {
             legend.spacing.x = unit(0.3, 'cm'), plot.margin=unit(c(0.8,0.6,0.4,0.6),"cm")) + labs(x = names(sens)[i], y = "Cumulative Incidence", col = "Scenario")
     
     if(names(sens)[i] == "tstart") {
-      p1 <- p1 + labs(x = "Intervention Trigger (Days)", y = "I(t) Peak", col = "Scenario") +
+      p1 <- p1 + labs(x = bquote("Intervention Trigger ("*italic(t[p])*")"), y = "I(t) Peak", col = "Scenario") +
         scale_y_continuous(limits = c(0.02,0.150), expand = c(0,0)) + scale_x_continuous(limits = c(0,150),expand = c(0, 0)) 
-      p2 <- p2 + labs(x = "Intervention Trigger (Days)", y = "Cumulative Incidence", col = "Scenario") +
+      p2 <- p2 + labs(x = bquote("Intervention Trigger ("*italic(t[p])*")"), y = "Total Cumulative Incidence", col = "Scenario") +
         scale_y_continuous(limits = c(0,1), expand = c(0,0)) + scale_x_continuous(limits = c(0,150), expand = c(0, 0)) 
     }
     
     if(names(sens)[i] == "cmin") {
-      p1 <- p1 + labs(x = expression(Intervention ~ c[min]), y = "I(t) Peak", col = "Scenario") +
+      p1 <- p1 + labs(x = bquote("Lockdown Scaling Factor ("*italic(c[min])*")"), y = "I(t) Peak", col = "Scenario") +
         scale_y_continuous(limits = c(0.02,0.150),expand = c(0,0)) + scale_x_continuous(limits = c(0,1),expand = c(0, 0)) 
-      p2 <- p2 + labs(x = expression(Intervention ~ c[min]), y = "Cumulative Incidence", col = "Scenario") +
+      p2 <- p2 + labs(x = bquote("Lockdown Scaling Factor ("*italic(c[min])*")"), y = bquote("Total Cumulative Incidence"), col = "Scenario") +
         scale_y_continuous(limits = c(0,1),expand = c(0,0)) + scale_x_continuous(limits = c(0,1),expand = c(0, 0)) 
     }
     
     if(names(sens)[i] == "t_dur") {
-      p1 <- p1 + labs(x = "Intervention Duration (Days)", y = "I(t) Peak", col = "Scenario") +
+      p1 <- p1 + labs(x = bquote("Intervention Duration ("*italic(d[t])*")"), y = "I(t) Peak", col = "Scenario") +
         scale_y_continuous(limits = c(0.001,0.150), expand = c(0,0)) + scale_x_continuous(limits = c(0,400),expand = c(0, 0)) 
-      p2 <- p2 + labs(x = "Intervention Duration (Days)", y = "Cumulative Incidence", col = "Scenario") +
+      p2 <- p2 + labs(x = bquote("Intervention Duration ("*italic(d[t])*")"), y = bquote("Total Cumulative Incidence"), col = "Scenario") +
         scale_y_continuous(limits = c(0,1),expand = c(0,0)) + scale_x_continuous(limits = c(0,400),expand = c(0, 0)) 
     }
     
@@ -274,6 +272,14 @@ combsensplot <- ggarrange(senslist[[1]][[1]], senslist[[2]][[1]], senslist[[3]][
 
 ggsave(combsensplot, filename = "5_scenarios_sensitivity.png", dpi = 300, type = "cairo", width = 9, height = 11, units = "in")
 
+
+for(j in 1:3) {
+  print(c("tstart1", "cmin", "t_dur")[j])
+  for(i in 1:5) {
+    print(senslist[[j]][[2]][senslist[[j]][[2]]$group == i,][which.max(senslist[[j]][[2]]$peak[senslist[[j]][[2]]$group == i]),])
+  }
+}
+
 # Multi-Parameter Optimisation --------------------------------------------
 
 init <- c(S = 0.99999, I = 0.00001, R = 0, C = 0)
@@ -284,8 +290,6 @@ parms = c(gamma = 1/GenTime(3, 2.8),
           tstart = 52,
           t_dur = 12*7,
           cmin = 0.4)
-
-#parameterspace <- expand.grid("trigday" = seq(0,175, by =2), "length" = seq(0,200, by =2), "scen" = seq(1,5))
 
 parameterspace <- expand.grid("trigday" = seq(0,100, by =5), "length" = seq(1,250, by =5))
 
@@ -317,8 +321,8 @@ for(j in 1:5) {
             axis.title.y=element_text(size=15),axis.title.x = element_text(size=15),  plot.title = element_text(size = 20, vjust = 3, hjust = -0.2, face = "bold"),
             legend.spacing.x = unit(0.3, 'cm'), plot.margin=unit(c(0.5,0.4,0.4,0.4),"cm"), legend.key.height =unit(0.7, "cm"),
             legend.key.width =  unit(0.5, "cm")) + 
-      labs(x = "Intervention Trigger", y = "Intervention Duration", fill = "I(t) Peak", title = paste("Scenario", j)) + 
-      scale_fill_viridis_c(direction = -1)
+      labs(x = bquote("Trigger Date ("*italic(t[p])*")"), y = bquote("Duration ("*italic(d[t])*")"), fill = "I(t) Peak", title = paste("Scenario", j)) + 
+      scale_fill_viridis_c(direction = -1) #, breaks= seq(0.01, 0.15, by = (0.15-0.01)/4), limits = c(0.01, 0.15)
     
     p2<- ggplot(scendata, aes(x = tstart, y = t_dur, fill = cum))  + geom_tile() +
       scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0, 0)) + theme_bw() +
@@ -326,8 +330,8 @@ for(j in 1:5) {
             axis.title.y=element_text(size=15),axis.title.x = element_text(size=15),  plot.title = element_text(size = 20, vjust = 3, hjust = -0.2),
             legend.spacing.x = unit(0.3, 'cm'), plot.margin=unit(c(0.5,0.4,0.4,0.4),"cm"), legend.key.height =unit(0.7, "cm"),
             legend.key.width =  unit(0.5, "cm")) + 
-      labs(x = "Intervention Trigger", y = "Intervention Duration", fill = "Cumulative\nIncidence", title = "") + 
-      scale_fill_viridis_c(direction = -1, option = "magma") 
+      labs(x = bquote("Trigger Date ("*italic(t[p])*")"), y = bquote("Duration ("*italic(d[t])*")"), fill = "Total\nCumulative\nIncidence", title = "") + 
+      scale_fill_viridis_c(direction = -1, option = "magma") #, breaks= seq(0.1, 0.8, by = (0.8-0.1)/4), limits = c(0.1, 0.8) 
     
     combplot <- ggarrange(p1,p2, ncol = 2, nrow = 1, widths = c(1,1.05), align = "h")
     print(combplot)
@@ -335,6 +339,10 @@ for(j in 1:5) {
     return(dump)
   })
   
+}
+
+for(j in 1:5) {
+    print(scensens[[j]][[2]]$tstart[which.min(scensens[[j]][[2]]$peak)])
 }
 
 combplot <- ggarrange(scensens[[1]][[1]],scensens[[2]][[1]],scensens[[3]][[1]],scensens[[4]][[1]],scensens[[5]][[1]],
