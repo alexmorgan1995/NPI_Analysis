@@ -274,34 +274,54 @@ for(j in 1:5) {
     colnames(optim) <- c("peak", "cum", "scen", "tstart1", "tstart2", "realstart2")
     
     p1 <- ggplot(optim, aes(x = tstart1, y = tstart2, fill= peak))  + geom_tile()  +
-      scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0, 0)) + theme_bw() +
-      theme(legend.position = "right", legend.title = element_text(size=15), legend.text=element_text(size=15),  axis.text=element_text(size=15),
-            axis.title.y=element_text(size=15),axis.title.x = element_text(size=15),  plot.title = element_text(size = 20, vjust = 3, hjust = -0.2, face = "bold"),
-            legend.spacing.x = unit(0.3, 'cm'), plot.margin=unit(c(0.5,0.4,0.4,0.4),"cm"), legend.key.height =unit(0.7, "cm"),
-            legend.key.width =  unit(0.5, "cm")) + labs(x = bquote("Trigger Date 1 ("*italic(t[p1])*")"), y = bquote("Trigger Date 2 ("*italic(t[p2])*")"), fill = "I(t) Peak", 
-                                                        title = paste("Scenario", j)) + 
-      scale_fill_viridis_c(direction = -1, breaks=seq(0.04, 0.15, by = (0.15-0.04)/4), limits = c(0.04, 0.15))
+      scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0, 0)) + theme_bw()  + 
+      scale_fill_viridis_c(direction = -1, breaks=seq(0.04, 0.15, by = (0.15-0.04)/4), limits = c(0.04, 0.15)) +
+      labs(x = bquote("Trigger Date 1 ("*italic(t[p1])*")"), y = bquote("Trigger Date 2 ("*italic(t[p2])*")"), fill = "I(t) Peak", 
+           title = paste("Scenario", j))
     
     p2 <- ggplot(optim, aes(x = tstart1, y = tstart2, fill= cum))  + geom_tile()  +
-      scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0, 0)) + theme_bw() +
-      theme(legend.position = "right", legend.title = element_text(size=15), legend.text=element_text(size=15),  axis.text=element_text(size=15),
-            axis.title.y=element_text(size=15),axis.title.x = element_text(size=15),  plot.title = element_text(size = 20, vjust = 3, hjust = 0.5, face = "bold"),
-            legend.spacing.x = unit(0.3, 'cm'), plot.margin=unit(c(0.5,0.4,0.4,0.4),"cm"), legend.key.height =unit(0.7, "cm"),
-            legend.key.width =  unit(0.5, "cm")) + labs(x = bquote("Trigger Date 1 ("*italic(t[p1])*")"), y = bquote("Trigger Date 2 ("*italic(t[p2])*")"), fill = "Total\nCumulative\nIncidence", title = "") + 
-      scale_fill_viridis_c(direction = -1, option = "magma", breaks=seq(0.5, 0.8, by = (0.8-0.5)/4), limits = c(0.5, 0.8))
+      scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0, 0)) + theme_bw() + 
+      scale_fill_viridis_c(direction = -1, option = "magma", breaks=seq(0.5, 0.8, by = (0.8-0.5)/4), limits = c(0.5, 0.8))  + 
+      labs(x = bquote("Trigger Date 1 ("*italic(t[p1])*")"), y = bquote("Trigger Date 2 ("*italic(t[p2])*")"), fill = "Cumulative\nIncidence", title = "")
     
-    combplot <- ggarrange(p1,p2, ncol = 2, nrow = 1, widths = c(1,1), align = "h")
+    
+    if(parms[["scen"]] != 5) {
+      p1 <- p1 + theme(legend.position = "bottom", legend.title = element_text(size=15), legend.text=element_text(size=13), axis.text.x=element_blank(),axis.text.y=element_text(size=18),
+                       axis.title.y=element_text(size=18),axis.title.x = element_blank(),  plot.title = element_text(size = 20, vjust = 3, hjust = -0.2, face = "bold"),
+                       legend.spacing.x = unit(0.5, 'cm'), plot.margin=unit(c(0.5,0.4,0.4,0.4),"cm"), legend.key.height =unit(0.5, "cm"),
+                       legend.key.width =  unit(1.25, "cm")) 
+      p2 <- p2 + theme(legend.position = "bottom", legend.title = element_text(size=15), legend.text=element_text(size=13), axis.text.x=element_blank(),axis.text.y=element_blank(),
+                       axis.title.y=element_blank(),axis.title.x = element_blank(),  plot.title = element_text(size = 20, vjust = 3, hjust = -0.2, face = "bold"),
+                       legend.spacing.x = unit(0.5, 'cm'), plot.margin=unit(c(0.5,0.4,0.4,0.4),"cm"), legend.key.height =unit(0.5, "cm"),
+                       legend.key.width =  unit(1, "cm")) 
+    }
+    else{
+      p1 <- p1 + theme(legend.position = "bottom", legend.title = element_text(size=15), legend.text=element_text(size=13), axis.text.x=element_text(size=18),axis.text.y=element_text(size=18),
+                       axis.title.y=element_text(size=18),axis.title.x = element_text(size=18),  plot.title = element_text(size = 20, vjust = 3, hjust = -0.2, face = "bold"),
+                       legend.spacing.x = unit(0.5, 'cm'), plot.margin=unit(c(0.5,0.4,0.4,0.4),"cm"), legend.key.height =unit(0.5, "cm"),
+                       legend.key.width =  unit(1.25, "cm")) 
+      
+      p2 <- p2 + theme(legend.position = "bottom", legend.title = element_text(size=15), legend.text=element_text(size=13), axis.text.x=element_text(size=18),axis.text.y=element_blank(),
+                       axis.title.y=element_blank(),axis.title.x = element_text(size=18),  plot.title = element_text(size = 20, vjust = 3, hjust = -0.2, face = "bold"),
+                       legend.spacing.x = unit(0.5, 'cm'), plot.margin=unit(c(0.5,0.4,0.4,0.4),"cm"), legend.key.height =unit(0.5, "cm"),
+                       legend.key.width =  unit(1, "cm")) 
+    }
+    
     
     print(paste0("Scenario: ", j, " Complete"))
-    dump <- list(combplot, optim)
+    dump <- list(p1,p2, optim)
    return(dump)
-  })   
+  })
+
 }
 
-multicombplot <- ggarrange(outcomelist[[1]][[1]],outcomelist[[2]][[1]],outcomelist[[3]][[1]],outcomelist[[4]][[1]],outcomelist[[5]][[1]],
-                      nrow = 5, ncol = 1)
+p1 <-ggarrange(NULL, outcomelist[[1]][[1]],outcomelist[[2]][[1]],outcomelist[[3]][[1]],outcomelist[[4]][[1]],outcomelist[[5]][[1]],
+               ncol = 1, nrow = 6, align = "v", common.legend = TRUE, legend = "bottom", heights = c(0.2,0.8,0.8,0.8,0.8,1)) #peak
+p2 <-ggarrange(NULL,outcomelist[[1]][[2]],outcomelist[[2]][[2]],outcomelist[[3]][[2]],outcomelist[[4]][[2]],outcomelist[[5]][[2]],
+               ncol = 1, nrow = 6, align = "v", common.legend = TRUE, legend = "bottom", heights = c(0.2,0.8,0.8,0.8,0.8,1)) #cum
+multicombplot <- ggarrange(p1, NULL, p2, ncol = 3, nrow = 1, widths = c(1,0,0.85), align = "h")
 
-ggsave(multicombplot, filename = "Heat_5_multi_sensitivity_trig.png", dpi = 300, type = "cairo", width = 10, height = 16, units = "in")
+ggsave(multicombplot, filename = "Heat_5_multi_sensitivity_trig_test.png", dpi = 300, type = "cairo", width = 8, height = 15, units = "in")
 
 # Multiple Optimisations - CMIN --------------------------------------------------
 
@@ -348,35 +368,58 @@ for(j in 1:5) {
     
     p1 <- ggplot(optim, aes(x = cmin1, y = cmin2, fill= peak))  + geom_tile()  +
       scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0, 0)) + theme_bw() +
-      theme(legend.position = "right", legend.title = element_text(size=15), legend.text=element_text(size=15),  axis.text=element_text(size=15),
-            axis.title.y=element_text(size=15),axis.title.x = element_text(size=15),  plot.title = element_text(size = 20, vjust = 3, hjust = -0.2, face = "bold"),
-            legend.spacing.x = unit(0.3, 'cm'), plot.margin=unit(c(0.5,0.4,0.4,0.4),"cm"), legend.key.height =unit(0.7, "cm"),
-            legend.key.width =  unit(0.5, "cm")) + labs(x = bquote(.(Intervention ~ 1 ~ italic(c[min]))), y = bquote(.(Intervention ~ 2 ~ italic(c[min]))), fill = "I(t) Peak", 
+      labs(x = bquote(.(Intervention ~ 1 ~ italic(c[min]))), y = bquote(.(Intervention ~ 2 ~ italic(c[min]))), fill = "I(t) Peak", 
                                                         title = paste("Scenario", j)) + 
-      scale_fill_viridis_c(direction = -1) # , breaks=seq(0.04, 0.15, by = (0.15-0.04)/4), limits = c(0.04, 0.15)
+      scale_fill_viridis_c(direction = -1, breaks=seq(0.04, 0.15, by = (0.15-0.04)/4), limits = c(0.04, 0.15))
     
     p2 <- ggplot(optim, aes(x = cmin1, y = cmin2, fill= cum))  + geom_tile()  +
       scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0, 0)) + theme_bw() +
-      theme(legend.position = "right", legend.title = element_text(size=15), legend.text=element_text(size=15),  axis.text=element_text(size=15),
-            axis.title.y=element_text(size=15),axis.title.x = element_text(size=15),  plot.title = element_text(size = 20, vjust = 3, hjust = 0.5, face = "bold"),
-            legend.spacing.x = unit(0.3, 'cm'), plot.margin=unit(c(0.5,0.4,0.4,0.4),"cm"), legend.key.height =unit(0.7, "cm"),
-            legend.key.width =  unit(0.5, "cm")) + 
-      scale_fill_viridis_c(direction = -1, option = "magma") + #, breaks=seq(0.48, 0.8, by = (0.8-0.48)/4), limits = c(0.48, 0.8) 
-      labs(x = bquote(.(Intervention ~ 1 ~ italic(c[min]))), y = bquote(.(Intervention ~ 2 ~ italic(c[min]))), fill = "Total\nCumulative\nIncidence", title = "")
+      labs(x = bquote(.(Intervention ~ 1 ~ italic(c[min]))), y = bquote(.(Intervention ~ 2 ~ italic(c[min]))), fill = "Cumulative\nIncidence", title = "") + 
+      scale_fill_viridis_c(direction = -1, option = "magma", breaks=seq(0.48, 0.8, by = (0.8-0.48)/4), limits = c(0.48, 0.8))
     
-    combplot <- ggarrange(p1,p2, ncol = 2, nrow = 1, widths = c(1,1), align = "h")
-    
+    if(parms[["scen"]] != 5) {
+      p1 <- p1 + theme(legend.position = "bottom", legend.title = element_text(size=15), legend.text=element_text(size=13), axis.text.x=element_blank(),axis.text.y=element_text(size=18),
+                       axis.title.y=element_text(size=18),axis.title.x = element_blank(),  plot.title = element_text(size = 20, vjust = 3, hjust = -0.2, face = "bold"),
+                       legend.spacing.x = unit(0.5, 'cm'), plot.margin=unit(c(0.5,0.4,0.4,0.4),"cm"), legend.key.height =unit(0.5, "cm"),
+                       legend.key.width =  unit(1.25, "cm"))
+      
+      p2 <- p2 + theme(legend.position = "bottom", legend.title = element_text(size=15), legend.text=element_text(size=13), axis.text.x=element_blank(),axis.text.y=element_blank(),
+                       axis.title.y=element_blank(),axis.title.x = element_blank(),  plot.title = element_text(size = 20, vjust = 3, hjust = -0.2, face = "bold"),
+                       legend.spacing.x = unit(0.5, 'cm'), plot.margin=unit(c(0.5,0.4,0.4,0.4),"cm"), legend.key.height =unit(0.5, "cm"),
+                       legend.key.width =  unit(1, "cm")) 
+    } else{
+      p1 <- p1 + theme(legend.position = "bottom", legend.title = element_text(size=15), legend.text=element_text(size=13), axis.text.x=element_text(size=18),axis.text.y=element_text(size=18),
+                       axis.title.y=element_text(size=18),axis.title.x = element_text(size=18),  plot.title = element_text(size = 20, vjust = 3, hjust = -0.2, face = "bold"),
+                       legend.spacing.x = unit(0.5, 'cm'), plot.margin=unit(c(0.5,0.4,0.4,0.4),"cm"), legend.key.height =unit(0.5, "cm"),
+                       legend.key.width =  unit(1.25, "cm")) 
+      
+      p2 <- p2 + theme(legend.position = "bottom", legend.title = element_text(size=15), legend.text=element_text(size=13), axis.text.x=element_text(size=18),axis.text.y=element_blank(),
+                       axis.title.y=element_blank(),axis.title.x = element_text(size=18),  plot.title = element_text(size = 20, vjust = 3, hjust = -0.2, face = "bold"),
+                       legend.spacing.x = unit(0.5, 'cm'), plot.margin=unit(c(0.5,0.4,0.4,0.4),"cm"), legend.key.height =unit(0.5, "cm"),
+                       legend.key.width =  unit(1, "cm")) 
+    }
     print(paste0("Scenario: ", j, " Complete"))
-    dump <- list(combplot, optim)
+    dump <- list(p1,p2, optim)
     return(dump)
   })   
 }
 
-multicombplotcmin <- ggarrange(outcomelistcmin[[1]][[1]],outcomelistcmin[[2]][[1]],outcomelistcmin[[3]][[1]],outcomelistcmin[[4]][[1]],outcomelistcmin[[5]][[1]],
-                           nrow = 5, ncol = 1)
+pcmin1 <-ggarrange(NULL, outcomelistcmin[[1]][[1]],outcomelistcmin[[2]][[1]],outcomelistcmin[[3]][[1]],outcomelistcmin[[4]][[1]],outcomelistcmin[[5]][[1]],
+               ncol = 1, nrow = 6, align = "v", common.legend = TRUE, legend = "bottom", heights = c(0.2,0.8,0.8,0.8,0.8,1)) #peak
+pcmin2 <-ggarrange(NULL,outcomelistcmin[[1]][[2]],outcomelistcmin[[2]][[2]],outcomelistcmin[[3]][[2]],outcomelistcmin[[4]][[2]],outcomelistcmin[[5]][[2]],
+               ncol = 1, nrow = 6, align = "v", common.legend = TRUE, legend = "bottom", heights = c(0.2,0.8,0.8,0.8,0.8,1)) #cum
+multicombplotcmin <- ggarrange(pcmin1, NULL, pcmin2, ncol = 3, nrow = 1, widths = c(1,0,0.9), align = "h")
 
-ggsave(multicombplotcmin, filename = "Heat_5_multi_sensitivity_cmin.png", dpi = 300, type = "cairo", width = 10, height = 16, units = "in")
-
+ggsave(multicombplotcmin, filename = "Heat_5_multi_sensitivity_cmin_test.png", dpi = 300, type = "cairo", width = 10, height = 16, units = "in")
 
 end_time <- Sys.time()
 end_time - start_time
+
+
+# Combplot ----------------------------------------------------------------
+
+
+combplotcminpeak <- ggarrange(multicombplot, NULL, multicombplotcmin, ncol = 3, nrow = 1, widths = c(1,0.1,1), align = "h", labels = c("A", "", "B"), font.label = c(size = 35),
+                              vjust = 1.2, hjust = -1)
+
+ggsave(combplotcminpeak, filename = "Heat_5_comb.png", dpi = 300, type = "cairo", width = 15, height = 16, units = "in")

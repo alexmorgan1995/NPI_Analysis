@@ -267,6 +267,7 @@ ggsave(combplotsenscum, filename = "cmin_Heat_5_sensitivity_cum.png", dpi = 300,
 
 lengthdata <- expand.grid("int1length" = seq(3,9, by = 3), "int2length" = seq(3,9, by = 3))
 optimdata <- expand.grid("tstart1" = seq(0,100, by = 5), "tstart2" = seq(0,100, by = 5))
+lengthdata2345 <- expand.grid("int1length" = seq(6,18, by = 6), "int2length" = seq(6,18, by = 6))
 
 init <- c(S = 0.99999, I = 0.00001, R = 0, C = 0)
 times <- seq(0,420,by = 1)
@@ -286,17 +287,18 @@ for (z in 1:5) {
   
   parms["scen"] = z
   
-  if(parms["scen"] != 0 && parms["scen"] != 1) {
-    parms["t_dur1"] = 12*7
-    parms["t_dur2"] = 12*7
-  }
-  
   
   for(j in 1:nrow(lengthdata)) {
     j = j
     
     parms["t_dur1"] <- lengthdata[j,1] * 7
     parms["t_dur2"] <- lengthdata[j,2] * 7 
+    
+    if(parms["scen"] != 0 && parms["scen"] != 1) {
+      parms["t_dur1"] = lengthdata2345[j,1] * 7
+      parms["t_dur2"] = lengthdata2345[j,2] * 7
+    }
+    
     
     outcomelist[[j]] <- local({
       
@@ -320,7 +322,7 @@ for (z in 1:5) {
               axis.title.y=element_text(size=15),axis.title.x = element_text(size=15),  plot.title = element_text(size = 20, vjust = 3, hjust = 0.5, face = "bold"),
               legend.spacing.x = unit(0.3, 'cm'), plot.margin=unit(c(0.5,0.4,0.4,0.4),"cm"), legend.key.height =unit(0.7, "cm"),
               legend.key.width =  unit(0.5, "cm")) + labs(x = bquote("Trigger 1 ("*italic(t[p1])*")"), y = bquote("Trigger 2 ("*italic(t[p2])*")"), fill = "I(t) Peak", 
-                                                          title = paste0("Int 1 & 2 Duration: ", lengthdata[j,1], "/", lengthdata[j,2], " weeks")) 
+                                                          title = paste0("Int 1 & 2 Duration: ", parms["t_dur1"]/7, "/", parms["t_dur2"]/7, " wks"))
       
       p2 <- ggplot(optim, aes(x = tstart1, y = tstart2, fill= cum))  + geom_tile()  +
         scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0, 0)) + theme_bw() +
@@ -328,27 +330,27 @@ for (z in 1:5) {
               axis.title.y=element_text(size=15),axis.title.x = element_text(size=15),  plot.title = element_text(size = 20, vjust = 3, hjust = 0.5, face = "bold"),
               legend.spacing.x = unit(0.3, 'cm'), plot.margin=unit(c(0.5,0.4,0.4,0.4),"cm"), legend.key.height =unit(0.7, "cm"),
               legend.key.width =  unit(0.5, "cm")) + labs(x = bquote("Trigger 1 ("*italic(t[p1])*")"), y = bquote("Trigger 2 ("*italic(t[p2])*")"), fill = "Total\nCumulative\nIncidence", 
-                                                                      title = paste0("Int 1 & 2 Duration: ", lengthdata[j,1], "/", lengthdata[j,2], " wks"))
+                                                          title = paste0("Int 1 & 2 Duration: ", parms["t_dur1"]/7, "/", parms["t_dur2"]/7, " wks"))
       
       if(z == 1) {
         p1 <- p1 + scale_fill_viridis_c(direction = -1, breaks=seq(0.044, 0.15, by = (0.15-0.044)/4), limits = c(0.044, 0.15) )  
         p2 <- p2 + scale_fill_viridis_c(direction = -1, option = "magma", breaks= seq(0.4, 0.8, by = (0.8-0.4)/4), limits = c(0.4, 0.8) )  
       }
       if(z == 2) {
-        p1 <- p1 + scale_fill_viridis_c(direction = -1, breaks=seq(0.046, 0.15, by = (0.15-0.046)/4), limits = c(0.046, 0.15) )  
-        p2 <- p2 + scale_fill_viridis_c(direction = -1, option = "magma", breaks=seq(0.52, 0.8, by = (0.8-0.52)/4), limits = c(0.52, 0.8) )  
+        p1 <- p1 + scale_fill_viridis_c(direction = -1, breaks=seq(0.042, 0.15, by = (0.15-0.042)/4), limits = c(0.042, 0.15) )  
+        p2 <- p2 + scale_fill_viridis_c(direction = -1, option = "magma", breaks=seq(0.45, 0.8, by = (0.8-0.45)/4), limits = c(0.45, 0.8) )  
       }
       if(z == 3) {
-        p1 <- p1 + scale_fill_viridis_c(direction = -1, breaks=seq(0.04, 0.15, by = (0.15-0.04)/4), limits = c(0.04, 0.15) )  
-        p2 <- p2 + scale_fill_viridis_c(direction = -1, option = "magma", breaks=seq(0.52, 0.8, by = (0.8-0.52)/4), limits = c(0.52, 0.8) )  
+        p1 <- p1 + scale_fill_viridis_c(direction = -1, breaks=seq(0.035, 0.15, by = (0.15-0.035)/4), limits = c(0.035, 0.15) )  
+        p2 <- p2 + scale_fill_viridis_c(direction = -1, option = "magma", breaks=seq(0.4, 0.8, by = (0.8-0.4)/4), limits = c(0.4, 0.8) )  
       }
       if(z == 4) {
-        p1 <- p1 + scale_fill_viridis_c(direction = -1, breaks=seq(0.048, 0.15, by = (0.15-0.048)/4), limits = c(0.048, 0.15) )  
-        p2 <- p2 + scale_fill_viridis_c(direction = -1, option = "magma", breaks=seq(0.52, 0.8, by = (0.8-0.52)/4), limits = c(0.52, 0.8) )  
+        p1 <- p1 + scale_fill_viridis_c(direction = -1, breaks=seq(0.042, 0.15, by = (0.15-0.042)/4), limits = c(0.042, 0.15) )  
+        p2 <- p2 + scale_fill_viridis_c(direction = -1, option = "magma", breaks=seq(0.4, 0.8, by = (0.8-0.4)/4), limits = c(0.4, 0.8) )  
       }
       if(z == 5) {
         p1 <- p1 + scale_fill_viridis_c(direction = -1, breaks=seq(0.05, 0.15, by = (0.15-0.05)/4), limits = c(0.05, 0.15) )  
-        p2 <- p2 + scale_fill_viridis_c(direction = -1, option = "magma", breaks=seq(0.52, 0.8, by = (0.8-0.52)/4), limits = c(0.52, 0.8) )  
+        p2 <- p2 + scale_fill_viridis_c(direction = -1, option = "magma", breaks=seq(0.4, 0.8, by = (0.8-0.4)/4), limits = c(0.4, 0.8) )  
       }
       
       print(paste0("Scenario: ", z, " | Length Analysis: ", (j/nrow(lengthdata))*100, "%"))
