@@ -84,7 +84,6 @@ SIRmulti <- function(time, state, parameters) {
 
 # Run the Model
 
-
 init <- c(S = 0.99999, I = 0.00001, R = 0, C = 0)
 times <- seq(0,400,by = 1)
 
@@ -126,9 +125,15 @@ for(j in 1:length(seq(1,5))) {
     plotdata <- melt(data, id.vars = c("time", "group"), measure.vars = ("I"))
     plotbeta <- melt(data, id.vars = c("time", "group"), measure.vars = ("beta"))
     plotre <- melt(data, id.vars = c("time", "group"), measure.vars = ("re"))
+    peak <- round(max(out$I), 3)
+    cum <- round(max(out$C), 3)
+    
+    datatext <- data.frame(x = c(250, 250), y = c(0.1875, 0.17), label = c( paste0("italic(I)[italic(max)]", " ==", peak), 
+                                                                           paste0("italic(I)[italic(c)](italic(t)[italic(max)])", " ==", cum)))
+    
     
     p1 <- ggplot(data = plotdata, aes(x = time, y = value, color = group , alpha= group)) + theme_bw() +
-      scale_y_continuous(limits = c(0 , 0.150),expand = c(0,0)) +
+      scale_y_continuous(limits = c(0 , 0.2),expand = c(0,0)) +
       theme(legend.position = "bottom", legend.title = element_text(size=15), legend.text=element_text(size=18),  axis.text=element_text(size=15),
             plot.title = element_text(size = 20, vjust = 3, hjust = 0.5, face = "bold"),
             axis.title.y=element_text(size=18), axis.title.x = element_blank(), legend.spacing.x = unit(0.3, 'cm'), plot.margin=unit(c(0.4,0.4,0.4,0.4),"cm")) + 
@@ -156,28 +161,32 @@ for(j in 1:length(seq(1,5))) {
     if(parms[["scen"]]  == 1) {
       p1 <- p1 + geom_rect(data = shade, inherit.aes = F, aes(ymin = ymin, ymax = ymax, xmin = xmin, xmax = xmax), alpha = 0.2,
                            fill = "darkblue") + 
-        geom_line(size = 1.1, stat = "identity") + labs(x ="Time (Days)", y = "Prevalence", col = "", title = "Scenario 1")
+        geom_line(size = 1.1, stat = "identity") + labs(x ="Time (Days)", y = "Prevalence", col = "", title = "Scenario 1")+ 
+        geom_label(data= datatext, inherit.aes = F, aes(x = x, y = y, label = label), size = 5.5, col = "black", parse = TRUE, fontface = "bold", fill = "white")
       p2 <- p2 + labs(x ="", y = bquote(beta* "(t)"), col = "")
       p3 <- p3 + labs(x ="Time (Days)", y = expression(R[e]), col = "")
     }
     if(parms[["scen"]] == 2) {
       p1 <- p1 + geom_rect(data = shade, inherit.aes = F, aes(ymin = ymin, ymax = ymax, xmin = xmin, xmax = xmax), alpha = 0.2,
                            fill = "darkblue") + 
-        geom_line(size = 1.1, stat = "identity") + labs(x ="", y = "", col = "", title = "Scenario 2")
+        geom_line(size = 1.1, stat = "identity") + labs(x ="", y = "", col = "", title = "Scenario 2")+ 
+        geom_label(data= datatext, inherit.aes = F, aes(x = x, y = y, label = label), size = 5.5, col = "black", parse = TRUE, fontface = "bold", fill = "white")
       p2 <- p2 + labs(x ="", y = "", col = "")
       p3 <- p3 + labs(x ="Time (Days)", y = "", col = "")
     }
     if(parms[["scen"]]  == 3) {
       p1 <- p1 + geom_rect(data = shade, inherit.aes = F, aes(ymin = ymin, ymax = ymax, xmin = xmin, xmax = xmax), alpha = 0.2,
                            fill = "darkblue") + 
-        geom_line(size = 1.1, stat = "identity") + labs(x ="", y = "", col = "", title = "Scenario 3")
+        geom_line(size = 1.1, stat = "identity") + labs(x ="", y = "", col = "", title = "Scenario 3")+ 
+        geom_label(data= datatext, inherit.aes = F, aes(x = x, y = y, label = label), size = 5.5, col = "black", parse = TRUE, fontface = "bold", fill = "white")
       p2 <- p2 + labs(x ="", y = "", col = "")
       p3 <- p3 + labs(x ="Time (Days)", y = "", col = "")
     }
     if(parms[["scen"]]  == 4) {
       p1 <- p1 + geom_rect(data = shade, inherit.aes = F, aes(ymin = ymin, ymax = ymax, xmin = xmin, xmax = xmax), alpha = 0.2,
                            fill = "darkblue") + 
-        geom_line(size = 1.1, stat = "identity") + labs(x ="", y = "", col = "", title = "Scenario 4")
+        geom_line(size = 1.1, stat = "identity") + labs(x ="", y = "", col = "", title = "Scenario 4")+ 
+        geom_label(data= datatext, inherit.aes = F, aes(x = x, y = y, label = label), size = 5.5, col = "black", parse = TRUE, fontface = "bold", fill = "white")
       p2 <- p2 + labs(x ="", y = "", col = "")
       p3 <- p3 + labs(x ="Time (Days)", y = "", col = "")
     }
@@ -202,7 +211,8 @@ for(j in 1:length(seq(1,5))) {
       
       p1 <- p1 + geom_rect(data = shade, inherit.aes = F, aes(ymin = ymin,  ymax = ymax, 
                                                               xmin = xmin, xmax = xmax), alpha = 0.2, fill = "darkblue") + geom_line(size = 1.1, stat = "identity") +
-        labs(x ="", y = "", col = "",  title = "Scenario 5")
+        labs(x ="", y = "", col = "",  title = "Scenario 5")+ 
+        geom_label(data= datatext, inherit.aes = F, aes(x = x, y = y, label = label), size = 5.5, col = "black", parse = TRUE, fontface = "bold", fill = "white")
       p2 <- p2 + labs(x ="", y = "", col = "")
       p3 <- p3 + labs(x ="Time (Days)", y = "", col = "")
     }
