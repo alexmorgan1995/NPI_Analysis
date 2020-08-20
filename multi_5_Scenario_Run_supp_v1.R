@@ -134,6 +134,40 @@ SIRmulti <- function(time, state, parameters) {
   })
 } 
 
+# Beta Plots --------------------------------------------------------------
+
+init <- c(S = 0.99999, I = 0.00001, R = 0, C = 0)
+times <- seq(0,400,by = 1)
+parms = c(gamma = 1/GenTime(3, 3),
+          scen = 3,
+          tstart = 52,
+          t_dur = 12*7,
+          cmin = 0.4)
+
+betaplots <- list()
+
+for(i in 1:5) {
+  betaplots[[i]] <- local({
+    parms["scen"] = seq(1:5)[i]
+    out <- cbind(data.frame(ode(y = init, func = SIR, times = times, parms = parms)),
+                 "beta" = combbeta(parms["scen"], times, parms[["tstart"]], parms[["t_dur"]], parms[["cmin"]]))
+    out$re <- out$beta/parms[["gamma"]]*out$S    
+    
+    p1 <- ggplot(data = out, aes(x = time, y = beta)) + theme_bw() + geom_line(size = 1.1, stat = "identity") + 
+      scale_y_continuous(limits = c(0 , 0.3), expand = c(0,0)) +
+      theme(legend.position = "bottom", legend.title = element_text(size=15), legend.text=element_text(size=18),  axis.text=element_text(size=15),
+            axis.title.y=element_text(size=18),axis.title.x = element_text(size=15), 
+            legend.spacing.x = unit(0.3, 'cm'), plot.margin=unit(c(0.4,0.4,0.4,0.4),"cm")) + scale_x_continuous(expand = c(0, 0)) + 
+      geom_line(size = 1.1, stat = "identity") + labs(x ="Time (Days)", y = expression(beta[(t)]))
+    
+    return(p1)
+    
+  })
+  ggsave(betaplots[[i]], filename = paste0("Beta_Scenario_", seq(1:5)[i],".png"), dpi = 300, type = "cairo", width = 6, height = 3, units = "in")
+}
+
+
+
 # Single Intervention Sensitivity Analysis --------------------------------
 
 init <- c(S = 0.99999, I = 0.00001, R = 0, C = 0)
@@ -337,20 +371,20 @@ for (z in 1:5) {
         p2 <- p2 + scale_fill_viridis_c(direction = -1, option = "magma", breaks= seq(0.4, 0.8, by = (0.8-0.4)/4), limits = c(0.4, 0.8) )  
       }
       if(z == 2) {
-        p1 <- p1 + scale_fill_viridis_c(direction = -1, breaks=seq(0.042, 0.15, by = (0.15-0.042)/4), limits = c(0.042, 0.15) )  
+        p1 <- p1 + scale_fill_viridis_c(direction = -1, breaks=seq(0.04, 0.15, by = (0.15-0.04)/4), limits = c(0.04, 0.15) )  
         p2 <- p2 + scale_fill_viridis_c(direction = -1, option = "magma", breaks=seq(0.45, 0.8, by = (0.8-0.45)/4), limits = c(0.45, 0.8) )  
       }
       if(z == 3) {
-        p1 <- p1 + scale_fill_viridis_c(direction = -1, breaks=seq(0.035, 0.15, by = (0.15-0.035)/4), limits = c(0.035, 0.15) )  
-        p2 <- p2 + scale_fill_viridis_c(direction = -1, option = "magma", breaks=seq(0.4, 0.8, by = (0.8-0.4)/4), limits = c(0.4, 0.8) )  
+        p1 <- p1 + scale_fill_viridis_c(direction = -1, breaks=seq(0.032, 0.15, by = (0.15-0.032)/4), limits = c(0.032, 0.15) )  
+        p2 <- p2 + scale_fill_viridis_c(direction = -1, option = "magma", breaks=seq(0.42, 0.8, by = (0.8-0.42)/42), limits = c(0.42, 0.8) )  
       }
       if(z == 4) {
-        p1 <- p1 + scale_fill_viridis_c(direction = -1, breaks=seq(0.042, 0.15, by = (0.15-0.042)/4), limits = c(0.042, 0.15) )  
-        p2 <- p2 + scale_fill_viridis_c(direction = -1, option = "magma", breaks=seq(0.4, 0.8, by = (0.8-0.4)/4), limits = c(0.4, 0.8) )  
+        p1 <- p1 + scale_fill_viridis_c(direction = -1, breaks=seq(0.04, 0.15, by = (0.15-0.04)/4), limits = c(0.04, 0.15) )  
+        p2 <- p2 + scale_fill_viridis_c(direction = -1, option = "magma", breaks=seq(0.42, 0.8, by = (0.8-0.42)/4), limits = c(0.42, 0.8) )  
       }
       if(z == 5) {
         p1 <- p1 + scale_fill_viridis_c(direction = -1, breaks=seq(0.05, 0.15, by = (0.15-0.05)/4), limits = c(0.05, 0.15) )  
-        p2 <- p2 + scale_fill_viridis_c(direction = -1, option = "magma", breaks=seq(0.4, 0.8, by = (0.8-0.4)/4), limits = c(0.4, 0.8) )  
+        p2 <- p2 + scale_fill_viridis_c(direction = -1, option = "magma", breaks=seq(0.44, 0.8, by = (0.8-0.44)/4), limits = c(0.44, 0.8) )  
       }
       
       print(paste0("Scenario: ", z, " | Length Analysis: ", (j/nrow(lengthdata))*100, "%"))
