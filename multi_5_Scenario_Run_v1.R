@@ -427,7 +427,7 @@ end_time - start_time
 
 # Combplot ----------------------------------------------------------------
 
-combplotcminpeak <- ggarrange(NULL, multicombplot, NULL, multicombplotcmin,NULL, ncol = 5, nrow = 1, widths = c(0.1,1,0.1,1,0.1), align = "h", labels = c("","A", "", "B",""), font.label = c(size = 35),
+combplotcminpeak <- ggarrange(NULL, multicombplot, NULL, multicombplotcmin,NULL, ncol = 5, nrow = 1, widths = c(0.1,1,0.1,1.05,0.1), align = "h", labels = c("","A", "", "B",""), font.label = c(size = 35),
                               vjust = 1.2, hjust = 0.8, common.legend = TRUE)
 
 ggsave(combplotcminpeak, filename = "Heat_5_comb.png", dpi = 300, type = "cairo", width = 15, height = 16, units = "in")

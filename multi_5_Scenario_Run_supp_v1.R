@@ -371,15 +371,15 @@ for (z in 1:5) {
         p2 <- p2 + scale_fill_viridis_c(direction = -1, option = "magma", breaks= seq(0.4, 0.8, by = (0.8-0.4)/4), limits = c(0.4, 0.8) )  
       }
       if(z == 2) {
-        p1 <- p1 + scale_fill_viridis_c(direction = -1, breaks=seq(0.04, 0.15, by = (0.15-0.04)/4), limits = c(0.04, 0.15) )  
+        p1 <- p1 + scale_fill_viridis_c(direction = -1, breaks=seq(0.038, 0.15, by = (0.15-0.038)/4), limits = c(0.038, 0.15) )  
         p2 <- p2 + scale_fill_viridis_c(direction = -1, option = "magma", breaks=seq(0.45, 0.8, by = (0.8-0.45)/4), limits = c(0.45, 0.8) )  
       }
       if(z == 3) {
-        p1 <- p1 + scale_fill_viridis_c(direction = -1, breaks=seq(0.032, 0.15, by = (0.15-0.032)/4), limits = c(0.032, 0.15) )  
-        p2 <- p2 + scale_fill_viridis_c(direction = -1, option = "magma", breaks=seq(0.42, 0.8, by = (0.8-0.42)/42), limits = c(0.42, 0.8) )  
+        p1 <- p1 + scale_fill_viridis_c(direction = -1, breaks=seq(0.03, 0.15, by = (0.15-0.03)/4), limits = c(0.03, 0.15) )  
+        p2 <- p2 + scale_fill_viridis_c(direction = -1, option = "magma", breaks=seq(0.42, 0.8, by = (0.8-0.42)/4), limits = c(0.42, 0.8) )  
       }
       if(z == 4) {
-        p1 <- p1 + scale_fill_viridis_c(direction = -1, breaks=seq(0.04, 0.15, by = (0.15-0.04)/4), limits = c(0.04, 0.15) )  
+        p1 <- p1 + scale_fill_viridis_c(direction = -1, breaks=seq(0.036, 0.15, by = (0.15-0.036)/4), limits = c(0.036, 0.15) )  
         p2 <- p2 + scale_fill_viridis_c(direction = -1, option = "magma", breaks=seq(0.42, 0.8, by = (0.8-0.42)/4), limits = c(0.42, 0.8) )  
       }
       if(z == 5) {
