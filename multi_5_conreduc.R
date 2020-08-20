@@ -85,7 +85,7 @@ sens <- list("tstart1" = seq(0,100, by = 1),
              "t_dur1" = seq(1,100, by = 1))
 
 init <- c(S = 0.99999, I = 0.00001, R = 0, C = 0)
-times <- seq(0,200,by = 1)
+times <- seq(0,300,by = 1)
 
 parms = c(gamma = 1/GenTime(3, 2.8),
           scen = 1,
@@ -104,7 +104,12 @@ for(z in 1:5) {
     
     outtraj <- cbind(data.frame(ode(y = init, func = SIRmulti, times = times, parms = parms)),
                  "beta" =  combbetamult(parms[["scen"]], times, parms[["tstart1"]], parms[["t_dur1"]], parms[["contstart"]], parms[["cmin1"]], parms[["cmin2"]]))
-
+    peak <- round(max(outtraj$I), 3)
+    cum <- round(max(outtraj$C), 3)
+    
+    datatext <- data.frame(x = c(150, 150), y = c(0.07, 0.06), label = c( paste0("italic(I)[italic(max)]", " ==", peak), 
+                                                                            paste0("italic(I)[italic(c)](italic(t)[italic(max)])", " ==", cum)))
+    
     datasens <- data.frame(matrix(nrow = 0, ncol = 5))
     
     for(i in 1:3) {
@@ -131,7 +136,7 @@ for(z in 1:5) {
     shade <- data.frame(xmin =  c(parms[["tstart1"]], parms[["contstart"]]), 
                         xmax = c(parms[["tstart1"]]+parms[["t_dur1"]], Inf), ymin = c(0,0), ymax = c(Inf,Inf))
     
-    p1 <- ggplot(data = outtraj, aes(x = time, y = I)) + theme_bw() + scale_y_continuous(limits = c(0,0.06), expand = c(0,0)) + 
+    p1 <- ggplot(data = outtraj, aes(x = time, y = I)) + theme_bw() + scale_y_continuous(limits = c(0,0.075), expand = c(0,0)) + 
       scale_x_continuous(expand = c(0, 0)) + geom_rect(data = shade, inherit.aes = F, aes(ymin = ymin, ymax = ymax, xmin = xmin, xmax = xmax), alpha = 0.2,
                                                        fill = c("darkblue", "darkred")) + geom_line(size = 1.1, stat = "identity") 
     
@@ -144,7 +149,8 @@ for(z in 1:5) {
            p1 <- p1 + theme(axis.text.x = element_blank(), axis.text.y = element_text(size=13), axis.title.y= element_text(size=15), 
                             axis.title.x = element_blank(), plot.margin=unit(c(0.2,0.4,0.2,0.4),"cm"),  
                             plot.title = element_text(size = 15, vjust = 3, hjust = 0.5, face = "bold")) + 
-             labs(y = "Prevalence", title = paste("Scenario", z), x = "Time")
+             labs(y = "Prevalence", title = paste("Scenario", z), x = "Time") + 
+             geom_label(data= datatext, inherit.aes = F, aes(x = x, y = y, label = label), size = 5.5, col = "black", parse = TRUE, fontface = "bold", fill = "white")
            p2 <- p2 + theme(axis.text.x = element_text(size=13), axis.text.y = element_text(size=13), axis.title.y=element_text(size=15),
                             axis.title.x = element_text(size=15), plot.margin=unit(c(0.2,0.4,0.2,0.4),"cm")) + 
              labs(y = bquote(italic(beta*"(t)")), x = "Time")
@@ -152,7 +158,8 @@ for(z in 1:5) {
       p1 <- p1 + theme(axis.text.x = element_blank(), axis.text.y = element_blank(), axis.title.y= element_blank(), 
                        axis.title.x = element_blank(), plot.margin=unit(c(0.2,0.4,0.2,0.4),"cm"),  
                        plot.title = element_text(size = 15, vjust = 3, hjust = 0.5, face = "bold")) + 
-        labs(y = bquote(italic(I*"(t)")), title = paste("Scenario", z))
+        labs(y = bquote(italic(I*"(t)")), title = paste("Scenario", z))+ 
+        geom_label(data= datatext, inherit.aes = F, aes(x = x, y = y, label = label), size = 5.5, col = "black", parse = TRUE, fontface = "bold", fill = "white")
       p2 <- p2 + theme(axis.text.x = element_text(size=13), axis.text.y = element_blank(), axis.title.y= element_blank(), 
                        axis.title.x = element_text(size=15), plot.margin=unit(c(0.2,0.4,0.2,0.4),"cm")) + 
         labs(x = "Time") 
@@ -166,14 +173,14 @@ for(z in 1:5) {
   })
 }
 
-traj <- ggarrange(outcomelistcmin[[1]][[1]], outcomelistcmin[[2]][[1]], outcomelistcmin[[3]][[1]], outcomelistcmin[[4]][[1]], outcomelistcmin[[5]][[1]],
-                  nrow = 1, ncol =5, widths = c(1,0.75,0.75,0.75,0.75))
-
+traj <- ggarrange(NULL,outcomelistcmin[[1]][[1]], outcomelistcmin[[2]][[1]], outcomelistcmin[[3]][[1]], outcomelistcmin[[4]][[1]], outcomelistcmin[[5]][[1]],NULL,
+                  nrow = 1, ncol =7, widths = c(0.1,1,0.75,0.75,0.75,0.75,0.1))
 
 sensitivityanal <- data.frame(matrix(nrow = 0, ncol = 5))
 for(i in 1:5) {
   sensitivityanal <- rbind(sensitivityanal, outcomelistcmin[[i]][[2]])
 }
+
 
 #
 cminpeak <- ggplot(sensitivityanal[sensitivityanal$sens == "cmin1",], aes(x = sensval, y = peak, col = scen)) + geom_line(size = 1.02) + theme_bw()  + 
@@ -223,13 +230,13 @@ durcum <- ggplot(sensitivityanal[sensitivityanal$sens == "t_dur1",], aes(x = sen
 
 #Plots 
 
-peak <- ggarrange(cminpeak, tstartpeak, durpeak,
-                  cmincum, tstartcum, durcum,
-                  nrow = 2, ncol =3, common.legend = TRUE, legend = "bottom", align = "v")
+peak <- ggarrange(NULL,cminpeak, tstartpeak, durpeak,NULL,
+                  NULL,cmincum, tstartcum, durcum,NULL,
+                  nrow = 2, ncol =5, common.legend = TRUE, legend = "bottom", align = "v", widths = c(0.1,1,1,1,0.1), heights = c(0.8,1))
 
 comb <- ggarrange(NULL, traj, NULL,peak, nrow = 4, ncol = 1, heights = c(0.08,1,0.1,0.8),
                   labels = c("","A","", "B"),font.label = c(size = 25), vjust = -0.3, hjust = -0.4)
 
-ggsave(comb, filename = "5_scenarios_multiadapt_const.png", dpi = 300, type = "cairo", width = 12, height = 10, units = "in")
+ggsave(comb, filename = "5_scenarios_multiadapt_const.png", dpi = 300, type = "cairo", width = 11, height = 10, units = "in")
 
 

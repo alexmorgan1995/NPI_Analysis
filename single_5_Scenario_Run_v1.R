@@ -49,7 +49,7 @@ combbeta <- function(scen, time, tstart, t_dur, cmin) {
 
 plot(seq(0,400),combbeta(5, seq(0,400), 12, 24*7, 0.4))
 
-#SEIR set of ODEs
+#SIR set of ODEs
 SIR <- function(time, state, parameters) {
   with(as.list(c(state, parameters)), {
     beta <- combbeta(scen, time, tstart, t_dur, cmin)
@@ -100,21 +100,20 @@ for(j in 1:length(seq(1,5))) {
     plotdata <- melt(data, id.vars = c("time", "group"), measure.vars = ("I"))
     plotbeta <- melt(data, id.vars = c("time", "group"), measure.vars = ("beta"))
     plotre <- melt(data, id.vars = c("time", "group"), measure.vars = ("re"))
-    peak <- round(max(out$I), 3)
-    cum <- round(max(out$C), 3)
+    peak <- round(max(out$I), 3); cum <- round(max(out$C), 3)
     
-    datatext <- data.frame(x = c(250, 250), y = c(0.1875, 0.16), label = c( paste0("italic(I)[italic(max)]", " ==", peak), 
-                                                                           paste0("italic(I)[italic(c)](italic(t)[italic(max)])", " ==", cum)))
+    datatext <- data.frame(x = c(200, 200), y = c(0.1875, 0.163), label = c( paste0("italic(I)[italic(max)]", " ==", peak), 
+                                                                             paste0("italic(I)[italic(c)](italic(t)[italic(max)])", " ==", cum)))
     
-    p1 <- ggplot(data = plotdata, aes(x = time, y = value, color = group , alpha= group)) + theme_bw() +
-      scale_y_continuous(limits = c(0 , 0.2),expand = c(0,0)) + 
-      scale_x_continuous( expand = c(0, 0)) + scale_alpha_manual(values = c(0.35, 1)) + scale_color_manual(values = c("darkred", "darkred"))
+    p1 <- ggplot(data = plotdata, aes(x = time, y = value, color = group, alpha= group)) + theme_bw() +
+      scale_y_continuous(limits = c(0, 0.2),expand = c(0,0)) + scale_x_continuous( expand = c(0, 0)) + 
+      scale_alpha_manual(values = c(0.35, 1)) + scale_color_manual(values = c("darkred", "darkred"))
     
-    p2 <- ggplot(plotbeta, aes(x = time, y = value, col = group, alpha= group))  + theme_bw() +
-      scale_y_continuous(limits = c(0 , 0.3), expand = c(0,0)) + 
-      geom_line(size = 1.1, stat = "identity") + scale_alpha_manual(values = c(0.35, 1)) + scale_color_manual(values = c("darkblue", "darkblue"))
+    p2 <- ggplot(plotbeta, aes(x = time, y = value, col = group, alpha= group)) + theme_bw() + scale_x_continuous(expand = c(0,0)) +
+      scale_y_continuous(limits = c(0 , 0.3), expand = c(0,0)) + geom_line(size = 1.1, stat = "identity") + 
+      scale_alpha_manual(values = c(0.35, 1)) + scale_color_manual(values = c("darkblue", "darkblue"))
     
-    p3 <- ggplot(plotre, aes(x = time, y = value, col = group, alpha= group)) + theme_bw() + 
+    p3 <- ggplot(plotre, aes(x = time, y = value, col = group, alpha= group)) + theme_bw() + scale_x_continuous(expand = c(0,0)) +
       geom_hline(yintercept = 1, size = 1.1, lty = 2, col = "black") + geom_line(size = 1.02, stat = "identity") + 
       scale_alpha_manual(values = c(0.35,1)) + scale_color_manual(values = c("darkblue", "darkblue"))
     
@@ -122,110 +121,82 @@ for(j in 1:length(seq(1,5))) {
     
     if(parms[["scen"]]  == 1) {
       p1 <- p1 + geom_rect(data = shade, inherit.aes = F, aes(ymin = ymin, ymax = ymax, xmin = xmin, xmax = xmax), alpha = 0.2,
-                           fill = "darkblue") + geom_line(size = 1.1, stat = "identity") + labs(x ="Time (Days)", y = "Prevalence", col = "", title = "Scenario 1") +
-        theme(legend.position = "bottom", legend.title = element_text(size=15), legend.text=element_text(size=18),  
-              plot.title = element_text(size = 20, vjust = 3, hjust = 0.5, face = "bold"),axis.text.x=element_blank(),axis.text.y=element_text(size=15),
-              axis.title.y=element_text(size=18), axis.title.x = element_blank(), legend.spacing.x = unit(0.3, 'cm'), plot.margin=unit(c(0.4,0.4,0.4,0.4),"cm")) + 
+                           fill = "darkblue") + geom_line(size = 1.1, stat = "identity") + labs(x =NULL, y = "Prevalence", col = "", title = "Scenario 1") +
+        theme(axis.title.y=element_text(size=18), plot.title = element_text(size = 20, vjust = 3, hjust = 0.5, face = "bold"), 
+              axis.text.x=element_blank(),axis.text.y=element_text(size=15), plot.margin=unit(c(0.4,0.4,0.4,0.4),"cm")) + 
         geom_label(data= datatext, inherit.aes = F, aes(x = x, y = y, label = label), size = 5.5, col = "black", parse = TRUE, fontface = "bold", fill = "white")
       
-      p2 <- p2 + labs(x ="", y = expression(beta[(t)]), col = "") +
-        theme(legend.position = "bottom", legend.title = element_text(size=15), legend.text=element_text(size=18),  
-              axis.title.y=element_text(size=18),axis.title.x = element_blank(), axis.text.x=element_blank(),axis.text.y=element_text(size=15),
-              legend.spacing.x = unit(0.3, 'cm'), plot.margin=unit(c(0.4,0.4,0.4,0.4),"cm")) + scale_x_continuous(expand = c(0, 0)) 
-      p3 <- p3 + labs(x ="Time (Days)", y = expression(R[e]), col = "")  +
-        theme(legend.position = "bottom", legend.title = element_text(size=15), legend.text=element_text(size=18),  axis.text=element_text(size=15),
-              axis.title.y=element_text(size=18),axis.title.x = element_text(size=18), 
-              legend.spacing.x = unit(0.3, 'cm'), plot.margin=unit(c(0.4,0.4,0.4,0.4),"cm")) + scale_x_continuous(expand = c(0, 0)) +
-        scale_y_continuous(limits = c(0 , 2), expand = c(0,0)) 
-    }
-    if(parms[["scen"]] == 2) {
-      p1 <- p1 + geom_rect(data = shade, inherit.aes = F, aes(ymin = ymin, ymax = ymax, xmin = xmin, xmax = xmax), alpha = 0.2,
-                           fill = "darkblue") + geom_line(size = 1.1, stat = "identity") + labs(x ="", y = "", col = "", title = "Scenario 2") +
-        theme(legend.position = "bottom", legend.title = element_text(size=15), legend.text=element_text(size=18),  
-              plot.title = element_text(size = 20, vjust = 3, hjust = 0.5, face = "bold"),axis.text.x=element_blank(),axis.text.y=element_blank(),
-              axis.title.y=element_text(size=18), axis.title.x = element_blank(), legend.spacing.x = unit(0.3, 'cm'), plot.margin=unit(c(0.4,0.4,0.4,0.4),"cm"))+ 
-        geom_label(data= datatext, inherit.aes = F, aes(x = x, y = y, label = label), size = 5.5, col = "black", parse = TRUE, fontface = "bold", fill = "white")
-      p2 <- p2 + labs(x ="", y = "", col = "")+
-        theme(legend.position = "bottom", legend.title = element_text(size=15), legend.text=element_text(size=18),  
-              axis.title.y=element_text(size=18),axis.title.x = element_blank(), axis.text.x=element_blank(),axis.text.y=element_blank(),
-              legend.spacing.x = unit(0.3, 'cm'), plot.margin=unit(c(0.4,0.4,0.4,0.4),"cm")) + scale_x_continuous(expand = c(0, 0)) 
-      p3 <- p3 + labs(x ="Time (Days)", y = "", col = "") +
-        theme(legend.position = "bottom", legend.title = element_text(size=15), legend.text=element_text(size=18),  axis.text.x=element_text(size=15),
-              axis.title.y=element_text(size=18),axis.title.x = element_text(size=18), axis.text.y=element_blank(),
-              legend.spacing.x = unit(0.3, 'cm'), plot.margin=unit(c(0.4,0.4,0.4,0.4),"cm")) + scale_x_continuous(expand = c(0, 0)) +
-        scale_y_continuous(limits = c(0 , 2), expand = c(0,0)) 
-    }
-    if(parms[["scen"]]  == 3) {
-      p1 <- p1 + geom_rect(data = shade, inherit.aes = F, aes(ymin = ymin, ymax = ymax, xmin = xmin, xmax = xmax), alpha = 0.2,
-                           fill = "darkblue") + geom_line(size = 1.1, stat = "identity") + labs(x ="", y = "", col = "", title = "Scenario 3") +
-        theme(legend.position = "bottom", legend.title = element_text(size=15), legend.text=element_text(size=18),  
-              plot.title = element_text(size = 20, vjust = 3, hjust = 0.5, face = "bold"),axis.text.x=element_blank(),axis.text.y=element_blank(),
-              axis.title.y=element_text(size=18), axis.title.x = element_blank(), legend.spacing.x = unit(0.3, 'cm'), plot.margin=unit(c(0.4,0.4,0.4,0.4),"cm")) + 
-        geom_label(data= datatext, inherit.aes = F, aes(x = x, y = y, label = label), size = 5.5, col = "black", parse = TRUE, fontface = "bold", fill = "white")
-      p2 <- p2 + labs(x ="", y = "", col = "") +
-        theme(legend.position = "bottom", legend.title = element_text(size=15), legend.text=element_text(size=18),  
-              axis.title.y=element_text(size=18),axis.title.x = element_blank(), axis.text.x=element_blank(),axis.text.y=element_blank(),
-              legend.spacing.x = unit(0.3, 'cm'), plot.margin=unit(c(0.4,0.4,0.4,0.4),"cm")) + scale_x_continuous(expand = c(0, 0)) 
-      p3 <- p3 + labs(x ="Time (Days)", y = "", col = "") +
-        theme(legend.position = "bottom", legend.title = element_text(size=15), legend.text=element_text(size=18),axis.text.x=element_text(size=15),axis.text.y=element_blank(),
-              axis.title.y=element_text(size=18),axis.title.x = element_text(size=18), 
-              legend.spacing.x = unit(0.3, 'cm'), plot.margin=unit(c(0.4,0.4,0.4,0.4),"cm")) + scale_x_continuous(expand = c(0, 0)) +
-        scale_y_continuous(limits = c(0 , 2), expand = c(0,0)) 
-    }
-    if(parms[["scen"]]  == 4) {
-      p1 <- p1 + geom_rect(data = shade, inherit.aes = F, aes(ymin = ymin, ymax = ymax, xmin = xmin, xmax = xmax), alpha = 0.2,
-                           fill = "darkblue") + geom_line(size = 1.1, stat = "identity") + labs(x ="", y = "", col = "", title = "Scenario 4")  +
-        theme(legend.position = "bottom", legend.title = element_text(size=15), legend.text=element_text(size=18),  
-              plot.title = element_text(size = 20, vjust = 3, hjust = 0.5, face = "bold"),axis.text.x =element_blank(),axis.text.y=element_blank(),
-              axis.title.y=element_text(size=18), axis.title.x = element_blank(), legend.spacing.x = unit(0.3, 'cm'), plot.margin=unit(c(0.4,0.4,0.4,0.4),"cm"))+ 
-        geom_label(data= datatext, inherit.aes = F, aes(x = x, y = y, label = label), size = 5.5, col = "black", parse = TRUE, fontface = "bold", fill = "white")
-      p2 <- p2 + labs(x ="", y = "", col = "") +
-        theme(legend.position = "bottom", legend.title = element_text(size=15), legend.text=element_text(size=18),  
-              axis.title.y=element_text(size=18),axis.title.x = element_blank(), axis.text.x=element_blank(),axis.text.y=element_blank(),
-              legend.spacing.x = unit(0.3, 'cm'), plot.margin=unit(c(0.4,0.4,0.4,0.4),"cm")) + scale_x_continuous(expand = c(0, 0)) 
-      p3 <- p3 + labs(x ="Time (Days)", y = "", col = "") +
-        theme(legend.position = "bottom", legend.title = element_text(size=15), legend.text=element_text(size=18),axis.text.x=element_text(size=15),axis.text.y=element_blank(),
-              axis.title.y=element_text(size=18),axis.title.x = element_text(size=18), 
-              legend.spacing.x = unit(0.3, 'cm'), plot.margin=unit(c(0.4,0.4,0.4,0.4),"cm")) + scale_x_continuous(expand = c(0, 0)) +
-        scale_y_continuous(limits = c(0 , 2), expand = c(0,0)) 
-    }
-    if(parms[["scen"]]  == 5) {
+      p2 <- p2 + theme(axis.title.y=element_text(size=18), axis.text.x=element_blank(), axis.text.y=element_text(size=15), 
+                       plot.margin=unit(c(0.4,0.6,0.4,0),"cm")) + labs(x =NULL, y = expression(beta[(t)]), col = "") 
       
-      shade <- data.frame(xmin =  c(parms[["tstart"]], parms[["tstart"]]+(parms[["t_dur"]]*0.333), 
-                                    parms[["tstart"]]+(parms[["t_dur"]]*0.667)),
-                          xmax = c(parms[["tstart"]]+(parms[["t_dur"]]*0.1667), parms[["tstart"]]+(parms[["t_dur"]]*0.53), 
-                                   parms[["tstart"]]+(parms[["t_dur"]]*0.833)),
-                          ymin = 0, ymax = Inf)
-      p1 <- p1 + geom_rect(data = shade, inherit.aes = F, aes(ymin = ymin,  ymax = ymax, 
-                                                              xmin = xmin, xmax = xmax), alpha = 0.2, fill = "darkblue") + geom_line(size = 1.1, stat = "identity") +
-        labs(x ="", y = "", col = "",  title = "Scenario 5") +
-        theme(legend.position = "bottom", legend.title = element_text(size=15), legend.text=element_text(size=18),  
-              plot.title = element_text(size = 20, vjust = 3, hjust = 0.5, face = "bold"),axis.text.x=element_blank(),axis.text.y=element_blank(),
-              axis.title.y=element_text(size=18), axis.title.x = element_blank(), legend.spacing.x = unit(0.3, 'cm'), plot.margin=unit(c(0.4,0.4,0.4,0.4),"cm")) + 
-        geom_label(data= datatext, inherit.aes = F, aes(x = x, y = y, label = label), size = 5.5, col = "black", parse = TRUE, fontface = "bold", fill = "white")
-      p2 <- p2 + labs(x ="", y = "", col = "") +
-        theme(legend.position = "bottom", legend.title = element_text(size=15), legend.text=element_text(size=18),  
-              axis.title.y=element_text(size=18),axis.title.x = element_blank(), axis.text.x=element_blank(),axis.text.y=element_blank(),
-              legend.spacing.x = unit(0.3, 'cm'), plot.margin=unit(c(0.4,0.4,0.4,0.4),"cm")) + scale_x_continuous(expand = c(0, 0)) 
-      p3 <- p3 + labs(x ="Time (Days)", y = "", col = "") +
-        theme(legend.position = "bottom", legend.title = element_text(size=15), legend.text=element_text(size=18),axis.text.x=element_text(size=15),axis.text.y=element_blank(),
-              axis.title.y=element_text(size=18),axis.title.x = element_text(size=18), 
-              legend.spacing.x = unit(0.3, 'cm'), plot.margin=unit(c(0.4,0.4,0.4,0.4),"cm")) + scale_x_continuous(expand = c(0, 0)) +
-        scale_y_continuous(limits = c(0 , 2), expand = c(0,0)) 
+      p3 <- p3 + theme(axis.text=element_text(size=15), axis.title.y=element_text(size=18), axis.title.x = element_text(size=18), 
+                       plot.margin=unit(c(0.4,0.6,0.4,0),"cm")) + labs(x ="Time (Days)", y = expression(R[e]), col = "")
     }
     
-    combplot <- ggarrange(p1,p2,p3, nrow = 3, ncol = 1, common.legend = TRUE, legend = "none", align = "v",heights = c(1, 0.4, 0.5))
+    if(parms[["scen"]] == 2) {
+      p1 <- p1 + geom_rect(data = shade, inherit.aes = F, aes(ymin = ymin, ymax = ymax, xmin = xmin, xmax = xmax), alpha = 0.2,
+                           fill = "darkblue") + geom_line(size = 1.1, stat = "identity") + labs(x =NULL, y = NULL, col = "", title = "Scenario 2") +
+        theme(plot.title = element_text(size = 20, vjust = 3, hjust = 0.5, face = "bold"), 
+              axis.text.x=element_blank(), axis.text.y=element_blank(), plot.margin=unit(c(0.4,0.4,0.4,0.4),"cm")) + 
+        geom_label(data= datatext, inherit.aes = F, aes(x = x, y = y, label = label), size = 5.5, col = "black", parse = TRUE, fontface = "bold", fill = "white")
+      
+      p2 <- p2 + theme(axis.text=element_blank(), plot.margin=unit(c(0.4,0.6,0.4,0),"cm")) + labs(x =NULL, y = NULL, col = "") 
+      
+      p3 <- p3 + theme(axis.text.x =element_text(size=15), axis.text.y=element_blank(), axis.title.x = element_text(size=18), 
+                       plot.margin=unit(c(0.4,0.6,0.4,0),"cm")) + labs(x ="Time (Days)", y = NULL, col = "")
+    }
+    
+    if(parms[["scen"]]  == 3) {
+      p1 <- p1 + geom_rect(data = shade, inherit.aes = F, aes(ymin = ymin, ymax = ymax, xmin = xmin, xmax = xmax), alpha = 0.2,
+                           fill = "darkblue") + geom_line(size = 1.1, stat = "identity") + labs(x =NULL, y = NULL, col = "", title = "Scenario 3") +
+        theme(plot.title = element_text(size = 20, vjust = 3, hjust = 0.5, face = "bold"), 
+              axis.text.x=element_blank(), axis.text.y=element_blank(), plot.margin=unit(c(0.4,0.4,0.4,0.4),"cm")) + 
+        geom_label(data= datatext, inherit.aes = F, aes(x = x, y = y, label = label), size = 5.5, col = "black", parse = TRUE, fontface = "bold", fill = "white")
+      
+      p2 <- p2 + theme(axis.text=element_blank(), plot.margin=unit(c(0.4,0.6,0.4,0),"cm")) + labs(x =NULL, y = NULL, col = "") 
+      
+      p3 <- p3 + theme(axis.text.x =element_text(size=15), axis.text.y=element_blank(), axis.title.x = element_text(size=18), 
+                       plot.margin=unit(c(0.4,0.6,0.4,0),"cm")) + labs(x ="Time (Days)", y = NULL, col = "")
+    }
+    
+    if(parms[["scen"]]  == 4) {
+      p1 <- p1 + geom_rect(data = shade, inherit.aes = F, aes(ymin = ymin, ymax = ymax, xmin = xmin, xmax = xmax), alpha = 0.2,
+                           fill = "darkblue") + geom_line(size = 1.1, stat = "identity") + labs(x =NULL, y = NULL, col = "", title = "Scenario 3") +
+        theme(plot.title = element_text(size = 20, vjust = 3, hjust = 0.5, face = "bold"), 
+              axis.text.x=element_blank(), axis.text.y=element_blank(), plot.margin=unit(c(0.4,0.4,0.4,0.4),"cm")) + 
+        geom_label(data= datatext, inherit.aes = F, aes(x = x, y = y, label = label), size = 5.5, col = "black", parse = TRUE, fontface = "bold", fill = "white")
+      
+      p2 <- p2 + theme(axis.text=element_blank(), plot.margin=unit(c(0.4,0.6,0.4,0),"cm")) + labs(x =NULL, y = NULL, col = "") 
+      
+      p3 <- p3 + theme(axis.text.x =element_text(size=15), axis.text.y=element_blank(), axis.title.x = element_text(size=18), 
+                       plot.margin=unit(c(0.4,0.6,0.4,0),"cm")) + labs(x ="Time (Days)", y = NULL, col = "")
+    }
+    
+    if(parms[["scen"]]  == 5) {
+      shade5 <- data.frame(xmin =  c(parms[["tstart"]], parms[["tstart"]]+(parms[["t_dur"]]*0.333), parms[["tstart"]]+(parms[["t_dur"]]*0.667)),
+                           xmax = c(parms[["tstart"]]+(parms[["t_dur"]]*0.1667), parms[["tstart"]]+(parms[["t_dur"]]*0.53), 
+                                    parms[["tstart"]]+(parms[["t_dur"]]*0.833)), ymin = 0, ymax = Inf)
+      
+      p1 <- p1 + geom_rect(data = shade5, inherit.aes = F, aes(ymin = ymin,  ymax = ymax, xmin = xmin, xmax = xmax), alpha = 0.2, fill = "darkblue") + 
+        geom_line(size = 1.1, stat = "identity")  + labs(x =NULL, y = NULL, col = "", title = "Scenario 5") + 
+        theme(plot.title = element_text(size = 20, vjust = 3, hjust = 0.5, face = "bold"), axis.text.x=element_blank(),axis.text.y=element_blank(),
+              plot.margin=unit(c(0.4,0.4,0.4,0.4),"cm")) + 
+        geom_label(data= datatext, inherit.aes = F, aes(x = x, y = y, label = label), size = 5.5, col = "black", parse = TRUE, fontface = "bold", fill = "white")
+      
+      p2 <- p2 + theme(axis.text=element_blank(), plot.margin=unit(c(0.4,0.6,0.4,0),"cm")) + labs(x =NULL, y = NULL, col = "") 
+      
+      p3 <- p3 + theme(axis.text.x =element_text(size=15), axis.text.y=element_blank(), axis.title.x = element_text(size=18), 
+                       plot.margin=unit(c(0.4,0.6,0.4,0),"cm")) + labs(x ="Time (Days)", y = NULL, col = "")
+    }
+    
+    combplot <- ggarrange(p1,NULL, p2, NULL, p3, nrow = 5, ncol = 1, common.legend = TRUE, legend = "none", align = "v",heights = c(1,-0.02, 0.4,-0.02, 0.5))
     dump <- list(combplot, plotdata, max(out$C))
     return(dump)
   })
 }
 
-combplot <- ggarrange(datalist[[1]][[1]], datalist[[2]][[1]], datalist[[3]][[1]], datalist[[4]][[1]], datalist[[5]][[1]],nrow = 1, ncol = 5, 
-                      legend = "none", align = "h", widths = c(1,0.9,0.9,0.9,0.9))
-
-ggsave(combplot, filename = "5_scenarios.png", dpi = 300, type = "cairo", width = 18, height = 10, units = "in")
-
-
+combplot <- ggarrange(NULL,datalist[[1]][[1]], datalist[[2]][[1]],  datalist[[3]][[1]], datalist[[4]][[1]], datalist[[5]][[1]], NULL, nrow = 1, ncol = 7, 
+          legend = "none", widths = c(0.1,1.2,0.9,0.9,0.9,0.9,0.1))
 
 for(i in 1:5) {
   print(datalist[[i]][[2]][datalist[[i]][[2]]$group == "scenario",]
@@ -277,70 +248,52 @@ for(i in 1:3) {
     
     colnames(datasens) <- c("peak", "cum", "sensval", "sens","group")
     
-    p1 <- ggplot(datasens, aes(x = sensval, y = peak, col = group)) + geom_line(size = 1.02) + theme_bw()  + labs(x = as.character(names(sens)[i]), y = "Peak I(t)", col = "Scenario")
+    p1 <- ggplot(datasens, aes(x = sensval, y = peak, col = group)) + geom_line(size = 1.02) + theme_bw() +
+      scale_y_continuous(limits = c(0,0.150), expand = c(0,0))  
     
-    p2 <- ggplot(datasens, aes(x = sensval, y = cum, col = group)) + geom_line(size = 1.02) + theme_bw()  + labs(x = names(sens)[i], y = "Cumulative Incidence", col = "Scenario")
+    p2 <- ggplot(datasens, aes(x = sensval, y = cum, col = group)) + geom_line(size = 1.02) + theme_bw() + 
+      scale_y_continuous(limits = c(0,1),expand = c(0,0))
     
     if(names(sens)[i] == "tstart") {
-      p1 <- p1 + labs(x = bquote("Intervention Trigger ("*italic(t[p])*")"), y = "I(t) Peak", col = "Scenario") +
-        scale_y_continuous(limits = c(0,0.150), expand = c(0,0)) + scale_x_continuous(limits = c(0,150),expand = c(0, 0))  + 
+      p1 <- p1 + labs(x = NULL, y = "I(t) Peak", col = "Scenario") + scale_x_continuous(limits = c(0,150),expand = c(0, 0))  + 
         theme(legend.position = "bottom", legend.title = element_text(size=18), legend.text=element_text(size=18),  axis.text.x=element_blank(), axis.text.y=element_text(size=15),
-              axis.title.y=element_text(size=18),axis.title.x = element_blank(), 
-              legend.spacing.x = unit(0.3, 'cm'), plot.margin=unit(c(0.2,0.2,0.2,0.2),"cm"))
+              axis.title.y=element_text(size=18),legend.spacing.x = unit(0.3, 'cm'), plot.margin=unit(c(0.1,0.3,0.1,0.3),"cm"))
       p2 <- p2 + labs(x = bquote("Intervention Trigger ("*italic(t[p])*")"), y = "Cumulative Incidence", col = "Scenario") +
-        scale_y_continuous(limits = c(0,1), expand = c(0,0)) + scale_x_continuous(limits = c(0,150), expand = c(0, 0)) +
         theme(legend.position = "bottom", legend.title = element_text(size=18), legend.text=element_text(size=18), axis.text.x=element_text(size=15), axis.text.y=element_text(size=15),
-              axis.title.y=element_text(size=18),axis.title.x = element_text(size=18), 
-              legend.spacing.x = unit(0.3, 'cm'), plot.margin=unit(c(0.2,0.2,0.2,0.2),"cm"))
+              axis.title.y=element_text(size=18),axis.title.x = element_text(size=18), legend.spacing.x = unit(0.3, 'cm'), plot.margin=unit(c(0.1,0.3,0.1,0.3),"cm")) +
+      scale_x_continuous(limits = c(0,150), expand = c(0, 0))
     }
     
     if(names(sens)[i] == "cmin") {
-      p1 <- p1 + labs(x = bquote("Lockdown Scaling Factor ("*italic(c[min])*")"), y = "I(t) Peak", col = "Scenario") +
-        scale_y_continuous(limits = c(0,0.150),expand = c(0,0)) + scale_x_continuous(limits = c(0,1),expand = c(0, 0))  + 
+      p1 <- p1 + labs(x = NULL, y = NULL, col = "Scenario") + scale_x_continuous(limits = c(0,1),expand = c(0, 0))  + 
         theme(legend.position = "bottom", legend.title = element_text(size=18), legend.text=element_text(size=18), axis.text.x=element_blank(), axis.text.y=element_blank(),
-              axis.title.y=element_blank(),axis.title.x = element_blank(), 
-              legend.spacing.x = unit(0.3, 'cm'), plot.margin=unit(c(0.2,0.2,0.2,0.2),"cm"))
-      p2 <- p2 + labs(x = bquote("Lockdown Scaling Factor ("*italic(c[min])*")"), y = bquote("Cumulative Incidence"), col = "Scenario") +
-        scale_y_continuous(limits = c(0,1),expand = c(0,0)) + scale_x_continuous(limits = c(0,1),expand = c(0, 0)) +
+              legend.spacing.x = unit(0.3, 'cm'), plot.margin=unit(c(0.1,0.3,0.1,0.3),"cm"))
+      p2 <- p2 + labs(x = bquote("Lockdown Scaling Factor ("*italic(c[min])*")"), y = NULL, col = "Scenario") +
         theme(legend.position = "bottom", legend.title = element_text(size=18), legend.text=element_text(size=18), axis.text.x=element_text(size=15), axis.text.y=element_blank(),
-              axis.title.y=element_blank(),axis.title.x = element_text(size=18), 
-              legend.spacing.x = unit(0.3, 'cm'), plot.margin=unit(c(0.2,0.2,0.2,0.2),"cm"))
+              axis.title.x = element_text(size=18), legend.spacing.x = unit(0.3, 'cm'), plot.margin=unit(c(0.1,0.3,0.1,0.3),"cm")) +
+        scale_x_continuous(limits = c(0,1),expand = c(0, 0))
     }
     
     if(names(sens)[i] == "t_dur") {
-      p1 <- p1 + labs(x = bquote("Intervention Duration ("*italic(d[t])*")"), y = "I(t) Peak", col = "Scenario") +
-        scale_y_continuous(limits = c(0,0.150), expand = c(0,0)) + scale_x_continuous(limits = c(0,400),expand = c(0, 0))  + 
+      p1 <- p1 + labs(x = NULL, y = NULL, col = "Scenario") + scale_x_continuous(limits = c(0,400),expand = c(0, 0))  + 
         theme(legend.position = "bottom", legend.title = element_text(size=18), legend.text=element_text(size=18),  axis.text.x=element_blank(), axis.text.y=element_blank(),
-              axis.title.y=element_blank(),axis.title.x = element_blank(), 
-              legend.spacing.x = unit(0.3, 'cm'), plot.margin=unit(c(0.2,0.2,0.2,0.2),"cm"))
-      p2 <- p2 + labs(x = bquote("Intervention Duration ("*italic(d[t])*")"), y = bquote("Cumulative Incidence"), col = "Scenario") +
-        scale_y_continuous(limits = c(0,1),expand = c(0,0)) + scale_x_continuous(limits = c(0,400),expand = c(0, 0)) +
+              legend.spacing.x = unit(0.3, 'cm'), plot.margin=unit(c(0.1,0.3,0.1,0.3),"cm"))
+      p2 <- p2 + labs(x = bquote("Intervention Duration ("*italic(d[t])*")"), y = NULL, col = "Scenario") + 
         theme(legend.position = "bottom", legend.title = element_text(size=18), legend.text=element_text(size=18),  axis.text.x=element_text(size=15), axis.text.y=element_blank(),
-              axis.title.y=element_blank(),axis.title.x = element_text(size=18), 
-              legend.spacing.x = unit(0.3, 'cm'), plot.margin=unit(c(0.2,0.2,0.2,0.2),"cm"))
+              axis.title.x = element_text(size=18), legend.spacing.x = unit(0.3, 'cm'), plot.margin=unit(c(0.1,0.3,0.1,0.3),"cm")) +
+        scale_x_continuous(limits = c(0,400),expand = c(0, 0)) 
     }
-    
-    sensplot <- ggarrange(p1,p2, ncol =  2, nrow = 1, common.legend =  TRUE, legend = "none", 
-                          align = "h")
-    if(names(sens)[i] == "t_dur") {
-      sensplot <- ggarrange(p1,p2, ncol =  2, nrow = 1, common.legend =  TRUE, legend = "bottom", 
-                            align = "h")
-    }
-    print(p1)
-    
     dump <- list(p1,p2, datasens)
     return(dump)
   })
 }
 
-
-combsensplot <- ggarrange(NULL, senslist[[1]][[1]], NULL, senslist[[2]][[1]], NULL,  senslist[[3]][[1]],NULL,
-          NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-          NULL, senslist[[1]][[2]], NULL, senslist[[2]][[2]], NULL, senslist[[3]][[2]],NULL,
+combsensplot <- ggarrange(NULL, senslist[[1]][[1]], NULL, senslist[[2]][[1]],  NULL, senslist[[3]][[1]],NULL,
+          NULL, NULL, NULL, NULL,NULL,NULL, NULL,
+          NULL, senslist[[1]][[2]], NULL, senslist[[2]][[2]],NULL, senslist[[3]][[2]],NULL,
           nrow = 3, ncol = 7, common.legend = TRUE,
-          legend = "bottom", align = "hv", heights = c(1,-0.05,1), 
-          widths = c(0.1,1,0.01,1,0.01,1,0.1))
-
+          legend = "bottom", align = "h", heights = c(1,-0.12,1), 
+          widths = c(0.1,1,0.04,0.9,0.04,0.9,0.1))
 
 for(j in 1:3) {
   print(c("tstart1", "cmin", "t_dur")[j])
@@ -352,8 +305,8 @@ for(j in 1:3) {
 # CombPlot Test -----------------------------------------------------------
 
 test <- ggarrange(NULL, combplot, NULL, combsensplot, nrow = 4, ncol = 1, labels =  c("","A","","B") ,
-          font.label = c(size = 35), vjust = -0.8, hjust = -0.1, heights = c(0.1,1,0.1,0.9))
-ggsave(test, filename = "supercombplot.png", dpi = 300, type = "cairo", width = 16, height = 13, units = "in")
+          font.label = c(size = 35), vjust = -0.7, hjust = -0.1, heights = c(0.1,1,0.1,0.9))
+ggsave(test, filename = "sens_traj_combplot.png", dpi = 300, type = "cairo", width = 13, height = 14, units = "in")
 
 # Multi-Parameter Optimisation --------------------------------------------
 
@@ -393,8 +346,8 @@ for(j in 1:5) {
     p1 <- ggplot(scendata, aes(x = tstart, y = t_dur, fill= peak))  + geom_tile()  +
       scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0, 0)) + theme_bw() +
       theme(legend.position = "right", legend.title = element_text(size=15), legend.text=element_text(size=15),  axis.text=element_text(size=15),
-            axis.title.y=element_text(size=15),axis.title.x = element_text(size=15),  plot.title = element_text(size = 20, vjust = 3, hjust = -0.2, face = "bold"),
-            legend.spacing.x = unit(0.3, 'cm'), plot.margin=unit(c(0.5,0.4,0.4,0.4),"cm"), legend.key.height =unit(0.7, "cm"),
+            axis.title.y=element_text(size=15),axis.title.x = element_text(size=15),  plot.title = element_text(size = 20, vjust = 2, hjust = -0.2, face = "bold"),
+            legend.spacing.x = unit(0.3, 'cm'), plot.margin=unit(c(0.3,0.4,0.3,0.4),"cm"), legend.key.height =unit(0.7, "cm"),
             legend.key.width =  unit(0.5, "cm")) + 
       labs(x = bquote("Trigger Date ("*italic(t[p])*")"), y = bquote("Duration ("*italic(d[t])*")"), fill = "I(t) Peak", title = paste("Scenario", j)) + 
       scale_fill_viridis_c(direction = -1) #, breaks= seq(0.01, 0.15, by = (0.15-0.01)/4), limits = c(0.01, 0.15)
@@ -402,8 +355,8 @@ for(j in 1:5) {
     p2<- ggplot(scendata, aes(x = tstart, y = t_dur, fill = cum))  + geom_tile() +
       scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0, 0)) + theme_bw() +
       theme(legend.position = "right", legend.title = element_text(size=15), legend.text=element_text(size=15),  axis.text=element_text(size=15),
-            axis.title.y=element_text(size=15),axis.title.x = element_text(size=15),  plot.title = element_text(size = 20, vjust = 3, hjust = -0.2),
-            legend.spacing.x = unit(0.3, 'cm'), plot.margin=unit(c(0.5,0.4,0.4,0.4),"cm"), legend.key.height =unit(0.7, "cm"),
+            axis.title.y=element_text(size=15),axis.title.x = element_text(size=15),  plot.title = element_text(size = 20, vjust = 2, hjust = -0.2),
+            legend.spacing.x = unit(0.3, 'cm'), plot.margin=unit(c(0.3,0.4,0.3,0.4),"cm"), legend.key.height =unit(0.7, "cm"),
             legend.key.width =  unit(0.5, "cm")) + 
       labs(x = bquote("Trigger Date ("*italic(t[p])*")"), y = bquote("Duration ("*italic(d[t])*")"), fill = "Total\nCumulative\nIncidence", title = "") + 
       scale_fill_viridis_c(direction = -1, option = "magma") #, breaks= seq(0.1, 0.8, by = (0.8-0.1)/4), limits = c(0.1, 0.8) 
@@ -413,7 +366,6 @@ for(j in 1:5) {
     dump <- list(combplot, scendata)
     return(dump)
   })
-  
 }
 
 for(j in 1:5) {
@@ -424,4 +376,3 @@ combplot <- ggarrange(scensens[[1]][[1]],scensens[[2]][[1]],scensens[[3]][[1]],s
                       nrow = 5, ncol = 1)
 
 ggsave(combplot, filename = "Heat_5_scenarios_sensitivity.png", dpi = 300, type = "cairo", width = 10, height = 16, units = "in")
-
