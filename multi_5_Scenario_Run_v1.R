@@ -226,7 +226,7 @@ for(j in 1:length(seq(1,5))) {
 combplotmulti <- ggarrange(datalist[[1]][[1]], datalist[[2]][[1]], datalist[[3]][[1]], datalist[[4]][[1]], datalist[[5]][[1]],nrow = 1, ncol = 5, 
                            legend = "none", align = "h")
 
-#ggsave(combplotmulti, filename = "5_scenarios_multi.png", dpi = 300, type = "cairo", width = 18, height = 10, units = "in")
+ggsave(combplotmulti, filename = "5_scenarios_multi.png", dpi = 300, type = "cairo", width = 18, height = 10, units = "in")
 
 for(i in 1:5) {
   print(datalist[[i]][[2]][datalist[[i]][[2]]$group == "scenario",]
@@ -286,13 +286,13 @@ for(j in 1:5) {
     p1 <- ggplot(optim, aes(x = tstart1, y = tstart2, fill= peak))  + geom_tile()  +
       scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0, 0)) + theme_bw()  + 
       scale_fill_viridis_c(direction = -1, breaks=seq(0.04, 0.152, by = (0.152-0.04)/4), limits = c(0.04, 0.152)) +
-      labs(x = bquote("Trigger Date 1 ("*italic(t[p1])*")"), y = bquote("Trigger Date 2 ("*italic(t[p2])*")"), fill = "I(t) Peak\n", 
+      labs(x = bquote("Trigger Point 1 ("*italic(t[p1])*")"), y = bquote("Trigger Point 2 ("*italic(t[p2])*")"), fill = "I(t) Peak\n", 
            title = paste("Scenario", j))
     
     p2 <- ggplot(optim, aes(x = tstart1, y = tstart2, fill= cum))  + geom_tile()  +
       scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0, 0)) + theme_bw() + 
       scale_fill_viridis_c(direction = -1, option = "magma", breaks=seq(0.5, 0.8, by = (0.8-0.5)/3), limits = c(0.5, 0.8))  + 
-      labs(x = bquote("Trigger Date 1 ("*italic(t[p1])*")"), y = bquote("Trigger Date 2 ("*italic(t[p2])*")"), fill = "Cumulative\nIncidence", title = "")
+      labs(x = bquote("Trigger Point 1 ("*italic(t[p1])*")"), y = bquote("Trigger Point 2 ("*italic(t[p2])*")"), fill = "Attack\nRate", title = "")
     
     
     if(parms[["scen"]] != 5) {
@@ -384,7 +384,7 @@ for(j in 1:5) {
     
     p2 <- ggplot(optim, aes(x = cmin1, y = cmin2, fill= cum))  + geom_tile()  +
       scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0, 0)) + theme_bw() +
-      labs(x = bquote(.(Intervention ~ 1 ~ italic(c[min]))), y = bquote(.(Intervention ~ 2 ~ italic(c[min]))), fill = "Cumulative\nIncidence", title = "") + 
+      labs(x = bquote(.(Intervention ~ 1 ~ italic(c[min]))), y = bquote(.(Intervention ~ 2 ~ italic(c[min]))), fill = "Attack\nRate", title = "") + 
       scale_fill_viridis_c(direction = -1, option = "magma", breaks=seq(0.48, 0.8, by = (0.8-0.48)/4), limits = c(0.48, 0.8))
     
     if(parms[["scen"]] != 5) {

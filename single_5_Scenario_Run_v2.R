@@ -319,7 +319,8 @@ parms = c(gamma = 1/GenTime(3, 2.8),
           t_dur = 12*7,
           cmin = 0.4)
 
-parameterspace <- expand.grid("trigday" = seq(0,100, by =5), "length" = seq(1,250, by =5))
+parameterspaceOG <- expand.grid("trigday" = seq(0,100, by =5), "length" = seq(1,250, by =5))
+parameterspacescen1 <- expand.grid("trigday" = seq(0,100, by =5), "length" = seq(1,125, by = 2.5))
 
 scensens <- list()
 
@@ -328,13 +329,19 @@ for(j in 1:5) {
   scensens[[j]] = local({
     i = 0
     scendata <- data.frame(matrix(nrow = nrow(parameterspace), ncol = 5))
+    parameterspace <- parameterspaceOG
+    
+    parms["scen"] <- j
+    
+    if(parms["scen"] == 1) {
+      parameterspace <- parameterspacescen1
+    }
     
     for(i in 1:nrow(parameterspace)) {
       
       print(paste0("Scenario ", j," - ", round(i/nrow(parameterspace), digits = 2)))
       parms["tstart"] <- parameterspace[i,1]
       parms["t_dur"] <- parameterspace[i,2] 
-      parms["scen"] <- j
       
       out <- data.frame(ode(y = init, func = SIR, times = times, parms = parms))
       scendata[i,] <- c("peak" = max(out$I), "cum" = max(out$C), "scen" = parms[["scen"]], 

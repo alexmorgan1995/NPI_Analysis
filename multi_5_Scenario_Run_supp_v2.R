@@ -179,7 +179,8 @@ parms = c(gamma = 1/GenTime(3, 2.8),
           t_dur = 12*7,
           cmin = 0.4)
 
-parameterspace <- expand.grid("trigday" = seq(0,100, by =5), "length" = seq(1,200, by =5))
+parameterspaceOG <- expand.grid("trigday" = seq(0,100, by =5), "length" = seq(1,250, by =5))
+parameterspacescen1 <- expand.grid("trigday" = seq(0,100, by =5), "length" = seq(1,125, by = 2.5))
 cminrange <- c(0.25, 0.5, 0.75)
 
 scensens <- list()
@@ -189,7 +190,15 @@ for(j in 1:5) {
   scensens[[j]] = local({
     i = 0
     scendataframe <- data.frame(matrix(nrow = 0, ncol = 6))
+    
+    parameterspace <- parameterspaceOG
+    
     parms["scen"] <- j
+    
+    if(parms["scen"] == 1) {
+      parameterspace <- parameterspacescen1
+    }
+    
     
     for(z in 1:length(cminrange)) {
       scendata <- data.frame(matrix(nrow = nrow(parameterspace), ncol = 6))
@@ -236,43 +245,43 @@ for(j in 1:5) {
       
       #COmmon Legends across Cmins
       if(j == 1) {
-        p1 <- p1 + scale_fill_viridis_c(direction = -1, breaks=seq(0.01, 0.15, by = (0.15-0.01)/4), limits = c(0.01, 0.15) )  
-        p2 <- p2 + scale_fill_viridis_c(direction = -1, option = "magma", breaks= seq(0, 0.8, by = (0.8)/4), limits = c(0, 0.8) )  
+        p1 <- p1 + scale_fill_viridis_c(direction = -1, breaks=seq(0.032, 0.15, by = (0.15-0.032)/4), limits = c(0.032, 0.15) )  
+        p2 <- p2 + scale_fill_viridis_c(direction = -1, option = "magma", breaks= seq(0.22, 0.8, by = (0.8-0.22)/4), limits = c(0.22, 0.8) )  
       }
       if(j == 2) {
-        p1 <- p1 + scale_fill_viridis_c(direction = -1, breaks=seq(0.025, 0.15, by = (0.15-0.025)/4), limits = c(0.025, 0.15) )  
-        p2 <- p2 + scale_fill_viridis_c(direction = -1, option = "magma", breaks=seq(0.4, 0.8, by = (0.8-0.4)/4), limits = c(0.4, 0.8) )  
+        p1 <- p1 + scale_fill_viridis_c(direction = -1, breaks=seq(0.022, 0.15, by = (0.15-0.022)/4), limits = c(0.022, 0.15) )  
+        p2 <- p2 + scale_fill_viridis_c(direction = -1, option = "magma", breaks=seq(0.32, 0.8, by = (0.8-0.32)/4), limits = c(0.32, 0.8) )  
       }
       if(j == 3) {
         p1 <- p1 + scale_fill_viridis_c(direction = -1, breaks=seq(0.03, 0.15, by = (0.15-0.03)/4), limits = c(0.03, 0.15) )  
-        p2 <- p2 + scale_fill_viridis_c(direction = -1, option = "magma", breaks=seq(0.4, 0.8, by = (0.8-0.4)/4), limits = c(0.4, 0.8) )  
+        p2 <- p2 + scale_fill_viridis_c(direction = -1, option = "magma", breaks=seq(0.36, 0.8, by = (0.8-0.36)/4), limits = c(0.36, 0.8) )  
       }
       if(j == 4) {
-        p1 <- p1 + scale_fill_viridis_c(direction = -1, breaks=seq(0.03, 0.15, by = (0.15-0.03)/4), limits = c(0.03, 0.15) )  
-        p2 <- p2 + scale_fill_viridis_c(direction = -1, option = "magma", breaks=seq(0.4, 0.8, by = (0.8-0.4)/4), limits = c(0.4, 0.8) )  
+        p1 <- p1 + scale_fill_viridis_c(direction = -1, breaks=seq(0.028, 0.15, by = (0.15-0.028)/4), limits = c(0.028, 0.15) )  
+        p2 <- p2 + scale_fill_viridis_c(direction = -1, option = "magma", breaks=seq(0.34, 0.8, by = (0.8-0.34)/4), limits = c(0.34, 0.8) )  
       }
       if(j == 5) {
         p1 <- p1 + scale_fill_viridis_c(direction = -1, breaks=seq(0.04, 0.15, by = (0.15-0.04)/4), limits = c(0.04, 0.15) )  
-        p2 <- p2 + scale_fill_viridis_c(direction = -1, option = "magma", breaks=seq(0.4, 0.8, by = (0.8-0.4)/4), limits = c(0.4, 0.8) )  
+        p2 <- p2 + scale_fill_viridis_c(direction = -1, option = "magma", breaks=seq(0.36, 0.8, by = (0.8-0.36)/4), limits = c(0.36, 0.8) )  
       }
       
       #Differentiating cmin titles
       if(t == 1) {
         p1 <- p1 + labs(x = bquote("Trigger ("*italic(t[p])*")"), y = bquote("Duration ("*italic(d[t])*")"), fill = "I(t) Peak", title = paste0("Scenario ", j),
                         subtitle = bquote("Intervention" ~ italic(c[min])~"="~0.25))
-        p2 <- p2 + labs(x = bquote("Trigger ("*italic(t[p])*")"), y = bquote("Duration ("*italic(d[t])*")"), fill = "Total\nCumulative\nIncidence", title = paste0("Scenario ", j),
+        p2 <- p2 + labs(x = bquote("Trigger ("*italic(t[p])*")"), y = bquote("Duration ("*italic(d[t])*")"), fill = "Attack\nRate", title = paste0("Scenario ", j),
                         subtitle = bquote("Intervention" ~ italic(c[min])~"="~0.25))
       }
       if(t == 2) {
         p1 <- p1 + labs(x = bquote("Trigger ("*italic(t[p])*")"), y = bquote("Duration ("*italic(d[t])*")"), fill = "I(t) Peak", title = "",
                         subtitle = bquote("Intervention" ~ italic(c[min])~"="~0.5))
-        p2 <- p2 + labs(x = bquote("Trigger ("*italic(t[p])*")"), y = bquote("Duration ("*italic(d[t])*")"), fill = "Total\nCumulative\nIncidence", title = "",
+        p2 <- p2 + labs(x = bquote("Trigger ("*italic(t[p])*")"), y = bquote("Duration ("*italic(d[t])*")"), fill = "Attack\nRate", title = "",
                         subtitle = bquote("Intervention" ~ italic(c[min])~"="~0.5))
       }
       if(t == 3) {
         p1 <- p1 + labs(x = bquote("Trigger ("*italic(t[p])*")"), y = bquote("Duration ("*italic(d[t])*")"), fill = "I(t) Peak", title = "",
                         subtitle = bquote("Intervention" ~ italic(c[min])~"="~0.75))
-        p2 <- p2 + labs(x = bquote("Trigger ("*italic(t[p])*")"), y = bquote("Duration ("*italic(d[t])*")"), fill = "Total\nCumulative\nIncidence", title = "",
+        p2 <- p2 + labs(x = bquote("Trigger ("*italic(t[p])*")"), y = bquote("Duration ("*italic(d[t])*")"), fill = "Attack\nRate", title = "",
                         subtitle = bquote("Intervention" ~ italic(c[min])~"="~0.75))
       }
       
@@ -300,7 +309,7 @@ ggsave(combplotsenscum, filename = "cmin_Heat_5_sensitivity_cum.png", dpi = 300,
 # Multiple Optimisations - Trigger + Length --------------------------------------------------
 
 lengthdata <- expand.grid("int1length" = seq(3,9, by = 3), "int2length" = seq(3,9, by = 3))
-optimdata <- expand.grid("tstart1" = seq(0,100, by = 5), "tstart2" = seq(0,100, by = 5))
+optimdata <- expand.grid("tstart1" = seq(0,100, by = 5), "tstart2" = seq(0,100, by = 10))
 lengthdata2345 <- expand.grid("int1length" = seq(6,18, by = 6), "int2length" = seq(6,18, by = 6))
 
 init <- c(S = 0.99999, I = 0.00001, R = 0, C = 0)
@@ -352,18 +361,18 @@ for (z in 1:5) {
       
       p1 <- ggplot(optim, aes(x = tstart1, y = tstart2, fill= peak))  + geom_tile()  +
         scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0, 0)) + theme_bw() +
-        theme(legend.position = "right", legend.title = element_text(size=15), legend.text=element_text(size=15),  axis.text=element_text(size=15),
-              axis.title.y=element_text(size=15),axis.title.x = element_text(size=15),  plot.title = element_text(size = 20, vjust = 3, hjust = 0.5, face = "bold"),
-              legend.spacing.x = unit(0.3, 'cm'), plot.margin=unit(c(0.5,0.4,0.4,0.4),"cm"), legend.key.height =unit(0.7, "cm"),
-              legend.key.width =  unit(0.5, "cm")) + labs(x = bquote("Trigger 1 ("*italic(t[p1])*")"), y = bquote("Trigger 2 ("*italic(t[p2])*")"), fill = "I(t) Peak", 
+        theme(legend.position = "right", legend.title = element_text(size=18), legend.text=element_text(size=18),  axis.text=element_text(size=18),
+              axis.title.y=element_text(size=18),axis.title.x = element_text(size=18),  plot.title = element_text(size = 20, vjust = 3, hjust = 0.5, face = "bold"),
+              legend.spacing.x = unit(0.3, 'cm'), plot.margin=unit(c(0.5,0.4,0.4,0.4),"cm"), legend.key.height =unit(0.8, "cm"),
+              legend.key.width =  unit(2, "cm")) + labs(x = bquote("Trigger 1 ("*italic(t[p1])*")"), y = bquote("Trigger 2 ("*italic(t[p2])*")"), fill = "I(t) Peak", 
                                                           title = paste0("Int 1 & 2 Duration: ", parms["t_dur1"]/7, "/", parms["t_dur2"]/7, " wks"))
       
       p2 <- ggplot(optim, aes(x = tstart1, y = tstart2, fill= cum))  + geom_tile()  +
         scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0, 0)) + theme_bw() +
-        theme(legend.position = "right", legend.title = element_text(size=15), legend.text=element_text(size=15),  axis.text=element_text(size=15),
-              axis.title.y=element_text(size=15),axis.title.x = element_text(size=15),  plot.title = element_text(size = 20, vjust = 3, hjust = 0.5, face = "bold"),
-              legend.spacing.x = unit(0.3, 'cm'), plot.margin=unit(c(0.5,0.4,0.4,0.4),"cm"), legend.key.height =unit(0.7, "cm"),
-              legend.key.width =  unit(0.5, "cm")) + labs(x = bquote("Trigger 1 ("*italic(t[p1])*")"), y = bquote("Trigger 2 ("*italic(t[p2])*")"), fill = "Total\nCumulative\nIncidence", 
+        theme(legend.position = "right", legend.title = element_text(size=18), legend.text=element_text(size=18),  axis.text=element_text(size=18),
+              axis.title.y=element_text(size=18),axis.title.x = element_text(size=18),  plot.title = element_text(size = 20, vjust = 3, hjust = 0.5, face = "bold"),
+              legend.spacing.x = unit(0.3, 'cm'), plot.margin=unit(c(0.5,0.4,0.4,0.4),"cm"), legend.key.height =unit(0.8, "cm"),
+              legend.key.width =  unit(2, "cm")) + labs(x = bquote("Trigger 1 ("*italic(t[p1])*")"), y = bquote("Trigger 2 ("*italic(t[p2])*")"), fill = "Attack\nRate", 
                                                           title = paste0("Int 1 & 2 Duration: ", parms["t_dur1"]/7, "/", parms["t_dur2"]/7, " wks"))
       
       if(z == 1) {
@@ -396,16 +405,29 @@ for (z in 1:5) {
   peak_multilength <- ggarrange(outcomelist[[1]][[1]], outcomelist[[2]][[1]], outcomelist[[3]][[1]],
                                 outcomelist[[4]][[1]], outcomelist[[5]][[1]], outcomelist[[6]][[1]],
                                 outcomelist[[7]][[1]], outcomelist[[8]][[1]], outcomelist[[9]][[1]],
-                                nrow = 3, ncol =3, align = "hv")
+                                nrow = 3, ncol =3, align = "hv", common.legend = TRUE, legend = "bottom")
   
-  ggsave(peak_multilength, filename = paste0("heatpeak_multilength",z,".png"), dpi = 300, type = "cairo", width = 16, height = 16, units = "in")
+  #ggsave(peak_multilength, filename = paste0("heatpeak_multilength",z,".png"), dpi = 300, type = "cairo", width = 13, height = 13, units = "in")
   
   cum_multilength <- ggarrange(outcomelist[[1]][[2]], outcomelist[[2]][[2]], outcomelist[[3]][[2]],
                                outcomelist[[4]][[2]], outcomelist[[5]][[2]], outcomelist[[6]][[2]],
                                outcomelist[[7]][[2]], outcomelist[[8]][[2]], outcomelist[[9]][[2]],
-                               nrow = 3, ncol =3, align = "hv")
+                               nrow = 3, ncol =3, align = "hv", common.legend = TRUE, legend = "bottom")
   
-  ggsave(cum_multilength, filename = paste0("heatcum_multilength", z, ".png"), dpi = 300, type = "cairo", width = 16, height = 16, units = "in")
+  #ggsave(cum_multilength, filename = paste0("heatcum_multilength", z, ".png"), dpi = 300, type = "cairo", width = 13, height = 13, units = "in")
+  
+  combplottstart <- ggarrange(NULL,NULL, 
+                              NULL,peak_multilength, 
+                              NULL,NULL,
+                              NULL,cum_multilength,
+                                nrow = 4, ncol = 2, align = "v", heights = c(0.1,1,0.1,1), widths = c(0.05,1),
+                              labels = c("","",
+                                         "","A",
+                                         "","", 
+                                         "","B"), font.label = c(size = 45), vjust = -1.1, hjust = 0.8)
+  
+  ggsave(combplottstart, filename = paste0("heatcum_multilength_comb",z,".png"), dpi = 300, type = "cairo", width = 15, height = 22, units = "in")
+  
 }
 
 # Multiple Optimisations - CMIN + Length --------------------------------------------------
@@ -460,19 +482,19 @@ for (z in 1:5) {
       
       p1 <- ggplot(optim, aes(x = cmin1, y = cmin2, fill= peak))  + geom_tile()  +
         scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0, 0)) + theme_bw() +
-        theme(legend.position = "right", legend.title = element_text(size=15), legend.text=element_text(size=15),  axis.text=element_text(size=15),
-              axis.title.y=element_text(size=15),axis.title.x = element_text(size=15),  plot.title = element_text(size = 20, vjust = 3, hjust = 0.5, face = "bold"),
-              legend.spacing.x = unit(0.3, 'cm'), plot.margin=unit(c(0.5,0.4,0.4,0.4),"cm"), legend.key.height =unit(0.7, "cm"),
-              legend.key.width =  unit(0.5, "cm")) + labs(x = bquote(.(Intervention ~ 1 ~ italic(c[min]))), y = bquote(.(Intervention ~ 2 ~ italic(c[min]))), fill = "I(t) Peak", 
+        theme(legend.position = "right", legend.title = element_text(size=18), legend.text=element_text(size=18),  axis.text=element_text(size=18),
+              axis.title.y=element_text(size=18),axis.title.x = element_text(size=18),  plot.title = element_text(size = 20, vjust = 3, hjust = 0.5, face = "bold"),
+              legend.spacing.x = unit(0.3, 'cm'), plot.margin=unit(c(0.5,0.4,0.4,0.4),"cm"), legend.key.height =unit(0.8, "cm"),
+              legend.key.width =  unit(2, "cm")) + labs(x = bquote(.(Intervention ~ 1 ~ italic(c[min]))), y = bquote(.(Intervention ~ 2 ~ italic(c[min]))), fill = "I(t) Peak", 
                                                           title = paste0("Int 1 & 2 Duration: ", parms["t_dur1"]/7, "/", parms["t_dur2"]/7, " weeks"))
       
       p2 <- ggplot(optim, aes(x = cmin1, y = cmin2, fill= cum))  + geom_tile()  +
         scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0, 0)) + theme_bw() +
-        theme(legend.position = "right", legend.title = element_text(size=15), legend.text=element_text(size=15),  axis.text=element_text(size=15),
-              axis.title.y=element_text(size=15),axis.title.x = element_text(size=15),  plot.title = element_text(size = 20, vjust = 3, hjust = 0.5, face = "bold"),
-              legend.spacing.x = unit(0.3, 'cm'), plot.margin=unit(c(0.5,0.4,0.4,0.4),"cm"), legend.key.height =unit(0.7, "cm"),
-              legend.key.width =  unit(0.5, "cm")) + 
-        labs(x = bquote(.(Intervention ~ 1 ~ italic(c[min]))), y = bquote(.(Intervention ~ 2 ~ italic(c[min]))), fill = "Total\nCumulative\nIncidence", 
+        theme(legend.position = "right", legend.title = element_text(size=18), legend.text=element_text(size=18),  axis.text=element_text(size=18),
+              axis.title.y=element_text(size=18),axis.title.x = element_text(size=18),  plot.title = element_text(size = 20, vjust = 3, hjust = 0.5, face = "bold"),
+              legend.spacing.x = unit(0.3, 'cm'), plot.margin=unit(c(0.5,0.4,0.4,0.4),"cm"), legend.key.height =unit(0.8, "cm"),
+              legend.key.width =  unit(2, "cm")) + 
+        labs(x = bquote(.(Intervention ~ 1 ~ italic(c[min]))), y = bquote(.(Intervention ~ 2 ~ italic(c[min]))), fill = "Attack\nRate", 
                                                                       title = paste0("Int 1 & 2 Duration: ", parms["t_dur1"]/7, "/", parms["t_dur2"]/7, " wks"))
       
       
@@ -497,7 +519,7 @@ for (z in 1:5) {
         p2 <- p2 + scale_fill_viridis_c(direction = -1, option = "magma", breaks=seq(0.48, 0.8, by = (0.8-0.48)/4), limits = c(0.48, 0.8) )  
       }
       
-      print(paste0("Scenario: ", z, " | Length Analysis: "))
+      print(paste0("Scenario: ", z, " | Length Analysis: ", (j/nrow(lengthdata))*100, "%"))
       
       return(list(p1,p2))
     })   
@@ -506,96 +528,23 @@ for (z in 1:5) {
   peak_multilength_cmin <- ggarrange(outcomelistcmin[[1]][[1]], outcomelistcmin[[2]][[1]], outcomelistcmin[[3]][[1]],
                                      outcomelistcmin[[4]][[1]], outcomelistcmin[[5]][[1]], outcomelistcmin[[6]][[1]],
                                      outcomelistcmin[[7]][[1]], outcomelistcmin[[8]][[1]], outcomelistcmin[[9]][[1]],
-                                nrow = 3, ncol =3, align = "hv")
-  
-  ggsave(peak_multilength_cmin, filename = paste0("heatpeakcmin_multilength",z,".png"), dpi = 300, type = "cairo", width = 16, height = 16, units = "in")
+                                nrow = 3, ncol =3, align = "hv", common.legend = TRUE, legend = "bottom")
   
   cum_multilength_cmin <- ggarrange(outcomelistcmin[[1]][[2]], outcomelistcmin[[2]][[2]], outcomelistcmin[[3]][[2]],
                                     outcomelistcmin[[4]][[2]], outcomelistcmin[[5]][[2]], outcomelistcmin[[6]][[2]],
                                     outcomelistcmin[[7]][[2]], outcomelistcmin[[8]][[2]], outcomelistcmin[[9]][[2]],
-                               nrow = 3, ncol =3, align = "hv")
+                               nrow = 3, ncol =3, align = "hv", common.legend = TRUE, legend = "bottom")
   
-  ggsave(cum_multilength_cmin, filename = paste0("heatcumcmin_multilength", z, ".png"), dpi = 300, type = "cairo", width = 16, height = 16, units = "in")
-}
-
-# Multiple Intervention Case Study - cmin Trajectory - All Scenarios ----------------------------------------
-
-cminoptim <- expand.grid("cmin1" = c(0.25, 0.5, 0.75), "cmin2" = c(0.25, 0.5, 0.75))
-
-init <- c(S = 0.99999, I = 0.00001, R = 0, C = 0)
-times <- seq(0,400,by = 1)
-
-parms = c(gamma = 1/GenTime(3, 2.8),
-          scen = 1,
-          tstart1 = 52,
-          t_dur1 = 6*7,
-          tstart2 = 42,
-          t_dur2 = 6*7,
-          cmin1 = 0.4,
-          cmin2 = 0.4)
-
-datalist <- list()
-
-for(z in 1:5){
+  combplotcmin <- ggarrange(NULL,NULL, 
+                              NULL,peak_multilength_cmin, 
+                              NULL,NULL,
+                              NULL,cum_multilength_cmin,
+                              nrow = 4, ncol = 2, align = "v", heights = c(0.1,1,0.1,1), widths = c(0.05,1),
+                              labels = c("","",
+                                         "","A",
+                                         "","", 
+                                         "","B"), font.label = c(size = 45), vjust = -1.1, hjust = 0.8)
   
-  for(j in 1:nrow(cminoptim)) {
-    
-    datalist[[j]] <- local({
-      
-      j=j
-      
-      parms["cmin1"] = cminoptim[j,1]
-      parms["cmin2"] = cminoptim[j,2]
-      parms["scen"] = z
-      
-      if(parms["scen"] != 0 && parms["scen"] != 1) {
-        parms["t_dur1"] = 12*7
-        parms["t_dur2"] = 12*7
-      }
-
-      out <- cbind(data.frame(ode(y = init, func = SIRmulti, times = times, parms = parms)), 
-                   "beta" = combbetamult(z, times, parms[["tstart1"]], parms[["t_dur1"]], parms[["tstart2"]], parms[["t_dur2"]],
-                                         parms[["cmin1"]], parms[["cmin2"]]))
-      out$re <- (out$beta/parms["gamma"])*out$S
-      
-      shade <- data.frame(xmin =  c(parms[["tstart1"]], parms[["tstart1"]] + parms[["t_dur1"]] + parms[["tstart2"]]), 
-                          xmax = c(parms[["tstart1"]]+parms[["t_dur1"]], parms[["tstart1"]]+parms[["t_dur1"]]+parms[["tstart2"]]+parms[["t_dur2"]]), 
-                          ymin = 0, ymax = Inf)
-      
-      p1 <- ggplot(data = out, aes(x = time, y = I)) + theme_bw() +
-        scale_y_continuous(limits = c(0 , 0.15),expand = c(0,0)) +
-        theme(legend.position = "bottom", legend.title = element_text(size=15), legend.text=element_text(size=15),  axis.text=element_text(size=12),
-              plot.title = element_text(size = 18, vjust = 2, hjust = 0.5, face = "bold"),
-              axis.title.y=element_text(size=15), axis.title.x = element_blank(), legend.spacing.x = unit(0.3, 'cm'), plot.margin=unit(c(0.4,0.4,0.4,0.4),"cm")) + 
-        scale_x_continuous(expand = c(0, 0))  +
-        geom_rect(data = shade, inherit.aes = F, aes(ymin = ymin, ymax = ymax, xmin = xmin, xmax = xmax), alpha = 0.2,
-                  fill = "darkblue") + geom_line(size = 1.1, stat = "identity") + labs(x ="Time (Days)", y = "Prevalence", 
-                                                                                       title = paste0(cminoptim[j,1], " / ", cminoptim[j,2]))
-      p2 <- ggplot(out, aes(x = time, y = beta))  + theme_bw() +
-        scale_y_continuous(limits = c(0 , 0.4), expand = c(0,0)) +
-        theme(legend.position = "bottom", legend.title = element_text(size=15), legend.text=element_text(size=15),  axis.text=element_text(size=12),
-              axis.title.y=element_text(size=15),axis.title.x = element_blank(), 
-              legend.spacing.x = unit(0.3, 'cm'), plot.margin=unit(c(0.4,0.4,0.4,0.4),"cm")) + scale_x_continuous(expand = c(0, 0)) + 
-        geom_line(size = 1.1, stat = "identity")  + labs(x ="", y = bquote(italic(beta["(t)"])))
-      
-      p3 <- ggplot(out, aes(x = time, y = re)) + theme_bw() +
-        scale_y_continuous(limits = c(0 , 2), expand = c(0,0)) +
-        theme(legend.position = "bottom", legend.title = element_text(size=18), legend.text=element_text(size=18),  axis.text=element_text(size=12),
-              axis.title.y=element_text(size=18),axis.title.x = element_text(size=18),
-              legend.spacing.x = unit(0.3, 'cm'), plot.margin=unit(c(0.4,0.4,0.4,0.4),"cm")) + scale_x_continuous(expand = c(0, 0)) + 
-        geom_hline(yintercept = 1, size = 1.1, lty = 2, col = "black") + geom_line(size = 1.02, stat = "identity") + labs(x ="Time (Days)", y = expression(R[e]))
-      
-      combplot <- ggarrange(p1,p2,p3, nrow = 3, ncol = 1, common.legend = TRUE, legend = "none", align = "v",heights = c(1, 0.45, 0.55))
-      return(combplot)
-    })
-  }
-  
-  
-  combplotmulti_TRAJ <- ggarrange(datalist[[1]], datalist[[2]], datalist[[3]], 
-                                  datalist[[4]], datalist[[5]], datalist[[6]],
-                                  datalist[[7]], datalist[[8]], datalist[[9]],
-                                  nrow = 3, ncol = 3, legend = "none", align = "h")
-  
-  ggsave(combplotmulti_TRAJ, filename = paste0("1_scenarios_multi_TRAJ_", z,".png"), dpi = 300, type = "cairo", width = 10, height = 15, units = "in")
+  ggsave(combplotcmin, filename = paste0("heatcum_multicmin_comb",z,".png"), dpi = 300, type = "cairo", width = 15, height = 22, units = "in")
   
 }
