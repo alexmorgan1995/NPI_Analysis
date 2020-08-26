@@ -245,8 +245,8 @@ for(j in 1:5) {
       
       #COmmon Legends across Cmins
       if(j == 1) {
-        p1 <- p1 + scale_fill_viridis_c(direction = -1, breaks=seq(0.032, 0.15, by = (0.15-0.032)/4), limits = c(0.032, 0.15) )  
-        p2 <- p2 + scale_fill_viridis_c(direction = -1, option = "magma", breaks= seq(0.22, 0.8, by = (0.8-0.22)/4), limits = c(0.22, 0.8) )  
+        p1 <- p1 + scale_fill_viridis_c(direction = -1, breaks=seq(0.035, 0.15, by = (0.15-0.035)/4), limits = c(0.035, 0.15) )  
+        p2 <- p2 + scale_fill_viridis_c(direction = -1, option = "magma", breaks= seq(0.25, 0.8, by = (0.8-0.25)/4), limits = c(0.25, 0.8) )  
       }
       if(j == 2) {
         p1 <- p1 + scale_fill_viridis_c(direction = -1, breaks=seq(0.022, 0.15, by = (0.15-0.022)/4), limits = c(0.022, 0.15) )  
