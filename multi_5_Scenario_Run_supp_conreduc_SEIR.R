@@ -131,11 +131,11 @@ for(j in 1:length(seq(1,5))) {
               plot.title = element_text(size = 20, vjust = 3, hjust = 0.5, face = "bold"),axis.text.x=element_blank(),axis.text.y=element_text(size=15),
               axis.title.y=element_text(size=18), axis.title.x = element_blank(), legend.spacing.x = unit(0.3, 'cm'), plot.margin=unit(c(0.4,0.4,0.4,0.4),"cm")) + 
         geom_label(data= datatext, inherit.aes = F, aes(x = x, y = y, label = label), size = 5.5, col = "black", parse = TRUE, fontface = "bold", fill = "white")
-      p2 <- p2 + labs(x ="", y = expression(beta[(t)]), col = "") +
+      p2 <- p2 + labs(x ="", y = expression(beta(t)), col = "") +
         theme(legend.position = "bottom", legend.title = element_text(size=15), legend.text=element_text(size=18),  
               axis.title.y=element_text(size=18),axis.title.x = element_blank(), axis.text.x=element_blank(),axis.text.y=element_text(size=15),
               legend.spacing.x = unit(0.3, 'cm'), plot.margin=unit(c(0.4,0.4,0.4,0.4),"cm")) + scale_x_continuous(expand = c(0, 0)) 
-      p3 <- p3 + labs(x ="Time (Days)", y = expression(R[e]), col = "")  +
+      p3 <- p3 + labs(x ="Time (Days)", y = expression(R[e](t)), col = "")  +
         theme(legend.position = "bottom", legend.title = element_text(size=15), legend.text=element_text(size=18),  axis.text=element_text(size=15),
               axis.title.y=element_text(size=18),axis.title.x = element_text(size=18), 
               legend.spacing.x = unit(0.3, 'cm'), plot.margin=unit(c(0.4,0.4,0.4,0.4),"cm")) + scale_x_continuous(expand = c(0, 0)) +
@@ -234,8 +234,6 @@ for(i in 1:5) {
 }
 
 ggsave(combplot, filename = "5_scenarios_SEIR.png", dpi = 300, type = "cairo", width = 14, height = 10, units = "in")
-
-
 
 
 # CONSTANT REDUCTION MODEL ------------------------------------------------
@@ -426,7 +424,7 @@ cmincum <- ggplot(sensitivityanal[sensitivityanal$sens == "cmin1",], aes(x = sen
   theme(legend.position = "bottom", legend.title = element_text(size=15), legend.text=element_text(size=18), legend.spacing.x = unit(0.3, 'cm'),
         axis.text=element_text(size=13),axis.title.x = element_text(size=15), 
         plot.margin=unit(c(0.2,0.4,0.2,0.1),"cm")) + 
-  labs(x = expression("Magnitude "~"("~italic("c"["min"]~")")), y = expression(italic("I"["c"]~"("~infinity~")")), col = "Scenario")+
+  labs(x = expression("Magnitude "~"("~italic("c"["min"]~")")), y = expression(italic("I"["c"]~"("~tmax~")")), col = "Scenario")+
   scale_x_continuous(expand = c(0, 0)) + scale_y_continuous(limits = c(0,0.75),expand = c(0, 0))
 #
 

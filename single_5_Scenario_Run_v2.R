@@ -127,10 +127,10 @@ for(j in 1:length(seq(1,5))) {
         geom_label(data= datatext, inherit.aes = F, aes(x = x, y = y, label = label), size = 5.5, col = "black", parse = TRUE, fontface = "bold", fill = "white")
       
       p2 <- p2 + theme(axis.title.y=element_text(size=18), axis.text.x=element_blank(), axis.text.y=element_text(size=15), 
-                       plot.margin=unit(c(0.4,0.6,0.4,0),"cm")) + labs(x =NULL, y = expression(beta[(t)]), col = "") 
+                       plot.margin=unit(c(0.4,0.6,0.4,0),"cm")) + labs(x =NULL, y = expression(beta(t)), col = "") 
       
       p3 <- p3 + theme(axis.text=element_text(size=15), axis.title.y=element_text(size=18), axis.title.x = element_text(size=18), 
-                       plot.margin=unit(c(0.4,0.6,0.4,0),"cm")) + labs(x ="Time (Days)", y = expression(R[e]), col = "")
+                       plot.margin=unit(c(0.4,0.6,0.4,0),"cm")) + labs(x ="Time (Days)", y = expression(R[e](t)), col = "")
     }
     
     if(parms[["scen"]] == 2) {
@@ -161,7 +161,7 @@ for(j in 1:length(seq(1,5))) {
     
     if(parms[["scen"]]  == 4) {
       p1 <- p1 + geom_rect(data = shade, inherit.aes = F, aes(ymin = ymin, ymax = ymax, xmin = xmin, xmax = xmax), alpha = 0.2,
-                           fill = "darkblue") + geom_line(size = 1.1, stat = "identity") + labs(x =NULL, y = NULL, col = "", title = "Scenario 3") +
+                           fill = "darkblue") + geom_line(size = 1.1, stat = "identity") + labs(x =NULL, y = NULL, col = "", title = "Scenario 4") +
         theme(plot.title = element_text(size = 20, vjust = 3, hjust = 0.5, face = "bold"), 
               axis.text.x=element_blank(), axis.text.y=element_blank(), plot.margin=unit(c(0.4,0.4,0.4,0.4),"cm")) + 
         geom_label(data= datatext, inherit.aes = F, aes(x = x, y = y, label = label), size = 5.5, col = "black", parse = TRUE, fontface = "bold", fill = "white")
@@ -243,6 +243,11 @@ for(i in 1:3) {
         data[j,4] <- names(sens)[i]
       }
       datasens <- rbind(datasens, data)
+      
+      if(parms["scen"] == 1 && names(sens)[i] == "t_dur") {
+        datasens[,3] <- datasens[,3]*2 
+      }
+      
       print(paste0("Sensitivity Test: ", i,", Scenario:", k))
     }
     
@@ -258,7 +263,7 @@ for(i in 1:3) {
       p1 <- p1 + labs(x = NULL, y = "I(t) Peak", col = "Scenario") + scale_x_continuous(limits = c(0,150),expand = c(0, 0))  + 
         theme(legend.position = "bottom", legend.title = element_text(size=18), legend.text=element_text(size=18),  axis.text.x=element_blank(), axis.text.y=element_text(size=15),
               axis.title.y=element_text(size=18),legend.spacing.x = unit(0.3, 'cm'), plot.margin=unit(c(0.1,0.3,0.1,0.3),"cm"))
-      p2 <- p2 + labs(x = bquote("Intervention Trigger ("*italic(t[p])*")"), y = "Attack Rate", col = "Scenario") +
+      p2 <- p2 + labs(x = bquote("Trigger Point ("*italic(t[p])*")"), y = "Attack Rate", col = "Scenario") +
         theme(legend.position = "bottom", legend.title = element_text(size=18), legend.text=element_text(size=18), axis.text.x=element_text(size=15), axis.text.y=element_text(size=15),
               axis.title.y=element_text(size=18),axis.title.x = element_text(size=18), legend.spacing.x = unit(0.3, 'cm'), plot.margin=unit(c(0.1,0.3,0.1,0.3),"cm")) +
       scale_x_continuous(limits = c(0,150), expand = c(0, 0))
@@ -278,7 +283,7 @@ for(i in 1:3) {
       p1 <- p1 + labs(x = NULL, y = NULL, col = "Scenario") + scale_x_continuous(limits = c(0,400),expand = c(0, 0))  + 
         theme(legend.position = "bottom", legend.title = element_text(size=18), legend.text=element_text(size=18),  axis.text.x=element_blank(), axis.text.y=element_blank(),
               legend.spacing.x = unit(0.3, 'cm'), plot.margin=unit(c(0.1,0.3,0.1,0.3),"cm"))
-      p2 <- p2 + labs(x = bquote("Intervention Duration ("*italic(d[t])*")"), y = NULL, col = "Scenario") + 
+      p2 <- p2 + labs(x = bquote("Relative Duration ("*italic(d[t])*")"), y = NULL, col = "Scenario") + 
         theme(legend.position = "bottom", legend.title = element_text(size=18), legend.text=element_text(size=18),  axis.text.x=element_text(size=15), axis.text.y=element_blank(),
               axis.title.x = element_text(size=18), legend.spacing.x = unit(0.3, 'cm'), plot.margin=unit(c(0.1,0.3,0.1,0.3),"cm")) +
         scale_x_continuous(limits = c(0,400),expand = c(0, 0)) 
@@ -319,8 +324,8 @@ parms = c(gamma = 1/GenTime(3, 2.8),
           t_dur = 12*7,
           cmin = 0.4)
 
-parameterspaceOG <- expand.grid("trigday" = seq(0,100, by =5), "length" = seq(1,250, by =5))
-parameterspacescen1 <- expand.grid("trigday" = seq(0,100, by =5), "length" = seq(1,125, by = 2.5))
+parameterspaceOG <- expand.grid("trigday" = seq(0,100, by =5), "length" = seq(1,252, by =5))
+parameterspacescen1 <- expand.grid("trigday" = seq(0,100, by =5), "length" = seq(1,126, by = 2.5))
 
 scensens <- list()
 
@@ -328,8 +333,10 @@ for(j in 1:5) {
   
   scensens[[j]] = local({
     i = 0
-    scendata <- data.frame(matrix(nrow = nrow(parameterspace), ncol = 5))
+    
     parameterspace <- parameterspaceOG
+    scendata <- data.frame(matrix(nrow = nrow(parameterspace), ncol = 5))
+    
     
     parms["scen"] <- j
     
@@ -350,23 +357,38 @@ for(j in 1:5) {
     
     colnames(scendata) <- c("peak", "cum", "scen", "tstart", "t_dur")
     
+    formatter2 <- function(x){ 
+      x*2
+    }
+    
     p1 <- ggplot(scendata, aes(x = tstart, y = t_dur, fill= peak))  + geom_tile()  +
-      scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0, 0)) + theme_bw() +
+      scale_x_continuous(expand = c(0, 0)) + theme_bw() +
       theme(legend.position = "right", legend.title = element_text(size=15), legend.text=element_text(size=15),  axis.text=element_text(size=15),
             axis.title.y=element_text(size=15),axis.title.x = element_text(size=15),  plot.title = element_text(size = 20, vjust = 2, hjust = -0.2, face = "bold"),
             legend.spacing.x = unit(0.3, 'cm'), plot.margin=unit(c(0.3,0.4,0.3,0.4),"cm"), legend.key.height =unit(0.7, "cm"),
             legend.key.width =  unit(0.5, "cm")) + 
-      labs(x = bquote("Trigger Point ("*italic(t[p])*")"), y = bquote("Duration ("*italic(d[t])*")"), fill = "I(t) Peak", title = paste("Scenario", j)) + 
       scale_fill_viridis_c(direction = -1) #, breaks= seq(0.01, 0.15, by = (0.15-0.01)/4), limits = c(0.01, 0.15)
     
+    if(parms["scen"] == 1){
+      p1 <- p1 + labs(x = bquote("Trigger Point ("*italic(t[p])*")"), y = bquote("Relative Duration ("*italic(d[t])*")"), fill = "I(t) Peak", title = paste("Scenario", j)) +
+        scale_y_continuous(expand = c(0,0), labels = formatter2)
+    } else { p1 <- p1 + labs(x = bquote("Trigger Point ("*italic(t[p])*")"), y = bquote("Duration ("*italic(d[t])*")"), fill = "I(t) Peak", title = paste("Scenario", j)) + 
+        scale_y_continuous(expand = c(0,0))}
+    
     p2<- ggplot(scendata, aes(x = tstart, y = t_dur, fill = cum))  + geom_tile() +
-      scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0, 0)) + theme_bw() +
+     scale_x_continuous(expand = c(0, 0)) + theme_bw() +
       theme(legend.position = "right", legend.title = element_text(size=15), legend.text=element_text(size=15),  axis.text=element_text(size=15),
             axis.title.y=element_text(size=15),axis.title.x = element_text(size=15),  plot.title = element_text(size = 20, vjust = 2, hjust = -0.2),
             legend.spacing.x = unit(0.3, 'cm'), plot.margin=unit(c(0.3,0.4,0.3,0.4),"cm"), legend.key.height =unit(0.7, "cm"),
             legend.key.width =  unit(0.5, "cm")) + 
-      labs(x = bquote("Trigger Point ("*italic(t[p])*")"), y = bquote("Duration ("*italic(d[t])*")"), fill = "Attack\nRate", title = "") + 
       scale_fill_viridis_c(direction = -1, option = "magma") #, breaks= seq(0.1, 0.8, by = (0.8-0.1)/4), limits = c(0.1, 0.8) 
+    
+    if(parms["scen"] == 1){
+      p2 <- p2 + labs(x = bquote("Trigger Point ("*italic(t[p])*")"), y = bquote("Relative Duration ("*italic(d[t])*")"), fill = "Attack\nRate", title = "") +
+        scale_y_continuous(expand = c(0,0), labels = formatter2)
+    } else { p2 <- p2 + labs(x = bquote("Trigger Point ("*italic(t[p])*")"), y = bquote("Duration ("*italic(d[t])*")"), fill = "Attack\nRate", title = "") + 
+      scale_y_continuous(expand = c(0,0))}
+    
     
     combplot <- ggarrange(p1,p2, ncol = 2, nrow = 1, widths = c(1,1), align = "h")
     print(combplot)

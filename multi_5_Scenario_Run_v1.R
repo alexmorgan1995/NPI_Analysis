@@ -128,7 +128,7 @@ for(j in 1:length(seq(1,5))) {
     peak <- round(max(out$I), 3)
     cum <- round(max(out$C), 3)
     
-    datatext <- data.frame(x = c(250, 250), y = c(0.1875, 0.17), label = c( paste0("italic(I)[italic(max)]", " ==", peak), 
+    datatext <- data.frame(x = c(200, 200), y = c(0.1875, 0.17), label = c( paste0("italic(I)[italic(max)]", " ==", peak), 
                                                                            paste0("italic(I)[italic(c)](italic(t)[italic(max)])", " ==", cum)))
     
     
@@ -164,7 +164,7 @@ for(j in 1:length(seq(1,5))) {
         geom_line(size = 1.1, stat = "identity") + labs(x ="Time (Days)", y = "Prevalence", col = "", title = "Scenario 1")+ 
         geom_label(data= datatext, inherit.aes = F, aes(x = x, y = y, label = label), size = 5.5, col = "black", parse = TRUE, fontface = "bold", fill = "white")
       p2 <- p2 + labs(x ="", y = bquote(beta* "(t)"), col = "")
-      p3 <- p3 + labs(x ="Time (Days)", y = expression(R[e]), col = "")
+      p3 <- p3 + labs(x ="Time (Days)", y = expression(R[e](t)), col = "")
     }
     if(parms[["scen"]] == 2) {
       p1 <- p1 + geom_rect(data = shade, inherit.aes = F, aes(ymin = ymin, ymax = ymax, xmin = xmin, xmax = xmax), alpha = 0.2,

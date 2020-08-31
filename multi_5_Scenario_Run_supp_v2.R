@@ -228,15 +228,17 @@ for(j in 1:5) {
       data <- datalist[[t]]
       
       p1 <- ggplot(data, aes(x = tstart, y = t_dur, fill= peak))  + geom_tile()  +
-        scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0, 0)) + theme_bw() +
+        scale_x_continuous(expand = c(0, 0)) + theme_bw() +
         theme(legend.position = "right", legend.title = element_text(size=15), legend.text=element_text(size=15),  axis.text=element_text(size=15),
               axis.title.y=element_text(size=15), axis.title.x = element_text(size=15),  plot.title = element_text(size = 20, vjust = 2, hjust = - 0.2, face = "bold"),
               plot.subtitle = element_text(size = 15, vjust = 2, hjust = 0.5, face = "bold"),
               legend.spacing.x = unit(0.3, 'cm'), plot.margin=unit(c(0.5,0.4,0.4,0.4),"cm"), legend.key.height =unit(0.7, "cm"),
               legend.key.width =  unit(0.5, "cm"))
       
+      
+      
       p2 <- ggplot(data, aes(x = tstart, y = t_dur, fill = cum))  + geom_tile() +
-        scale_y_continuous(expand = c(0,0)) + scale_x_continuous(expand = c(0, 0)) + theme_bw() +
+        scale_x_continuous(expand = c(0, 0)) + theme_bw() +
         theme(legend.position = "right", legend.title = element_text(size=15), legend.text=element_text(size=15),  axis.text=element_text(size=15),
               axis.title.y=element_text(size=15),axis.title.x = element_text(size=15),  plot.title = element_text(size = 20, vjust = 2, hjust = -0.2, face = "bold"),
               plot.subtitle = element_text(size = 15, vjust = 2, hjust = 0.5, face = "bold"),
@@ -245,6 +247,7 @@ for(j in 1:5) {
       
       #COmmon Legends across Cmins
       if(j == 1) {
+        
         p1 <- p1 + scale_fill_viridis_c(direction = -1, breaks=seq(0.035, 0.15, by = (0.15-0.035)/4), limits = c(0.035, 0.15) )  
         p2 <- p2 + scale_fill_viridis_c(direction = -1, option = "magma", breaks= seq(0.25, 0.8, by = (0.8-0.25)/4), limits = c(0.25, 0.8) )  
       }
@@ -266,23 +269,59 @@ for(j in 1:5) {
       }
       
       #Differentiating cmin titles
+      formatter2 <- function(x){ 
+        x*2
+      }
+      
       if(t == 1) {
-        p1 <- p1 + labs(x = bquote("Trigger ("*italic(t[p])*")"), y = bquote("Duration ("*italic(d[t])*")"), fill = "I(t) Peak", title = paste0("Scenario ", j),
-                        subtitle = bquote("Intervention" ~ italic(c[min])~"="~0.25))
-        p2 <- p2 + labs(x = bquote("Trigger ("*italic(t[p])*")"), y = bquote("Duration ("*italic(d[t])*")"), fill = "Attack\nRate", title = paste0("Scenario ", j),
-                        subtitle = bquote("Intervention" ~ italic(c[min])~"="~0.25))
+        
+        if(parms["scen"] == 1){
+          p1 <- p1 + labs(x = bquote("Trigger ("*italic(t[p])*")"), y = bquote("Relative Duration ("*italic(d[t])*")"), fill = "I(t) Peak", title = paste0("Scenario ", j),
+                          subtitle = bquote("Intervention" ~ italic(c[min])~"="~0.25)) + scale_y_continuous(expand = c(0,0), labels = formatter2)
+          p2 <- p2 + labs(x = bquote("Trigger ("*italic(t[p])*")"), y = bquote("Relative Duration ("*italic(d[t])*")"), fill = "Attack\nRate", title = paste0("Scenario ", j),
+                          subtitle = bquote("Intervention" ~ italic(c[min])~"="~0.25)) + scale_y_continuous(expand = c(0,0), labels = formatter2)
+          
+        } else { 
+          p1 <- p1 + labs(x = bquote("Trigger Point ("*italic(t[p])*")"), y = bquote("Duration ("*italic(d[t])*")"), fill = "I(t) Peak", title = paste("Scenario", j),
+                          subtitle = bquote("Intervention" ~ italic(c[min])~"="~0.25)) + 
+          scale_y_continuous(expand = c(0,0))
+          p2 <- p2 + labs(x = bquote("Trigger Point ("*italic(t[p])*")"), y = bquote("Duration ("*italic(d[t])*")"), fill = "Attack\nRate", title = paste("Scenario", j),
+                          subtitle = bquote("Intervention" ~ italic(c[min])~"="~0.25)) + 
+            scale_y_continuous(expand = c(0,0))
+          }
       }
       if(t == 2) {
-        p1 <- p1 + labs(x = bquote("Trigger ("*italic(t[p])*")"), y = bquote("Duration ("*italic(d[t])*")"), fill = "I(t) Peak", title = "",
-                        subtitle = bquote("Intervention" ~ italic(c[min])~"="~0.5))
-        p2 <- p2 + labs(x = bquote("Trigger ("*italic(t[p])*")"), y = bquote("Duration ("*italic(d[t])*")"), fill = "Attack\nRate", title = "",
-                        subtitle = bquote("Intervention" ~ italic(c[min])~"="~0.5))
+        
+        if(parms["scen"] == 1){
+          p1 <- p1 + labs(x = bquote("Trigger ("*italic(t[p])*")"), y = bquote("Relative Duration ("*italic(d[t])*")"), fill = "I(t) Peak", title = "",
+                          subtitle = bquote("Intervention" ~ italic(c[min])~"="~0.5)) + scale_y_continuous(expand = c(0,0), labels = formatter2)
+          p2 <- p2 + labs(x = bquote("Trigger ("*italic(t[p])*")"), y = bquote("Relative Duration ("*italic(d[t])*")"), fill = "Attack\nRate", title = "",
+                          subtitle = bquote("Intervention" ~ italic(c[min])~"="~0.5)) + scale_y_continuous(expand = c(0,0), labels = formatter2)
+          
+        } else { 
+          p1 <- p1 + labs(x = bquote("Trigger Point ("*italic(t[p])*")"), y = bquote("Duration ("*italic(d[t])*")"), fill = "I(t) Peak", title = "",
+                          subtitle = bquote("Intervention" ~ italic(c[min])~"="~0.5)) + 
+            scale_y_continuous(expand = c(0,0))
+          p2 <- p2 + labs(x = bquote("Trigger Point ("*italic(t[p])*")"), y = bquote("Duration ("*italic(d[t])*")"), fill = "Attack\nRate", title = "",
+                          subtitle = bquote("Intervention" ~ italic(c[min])~"="~0.5)) + 
+            scale_y_continuous(expand = c(0,0))
+        }
       }
       if(t == 3) {
-        p1 <- p1 + labs(x = bquote("Trigger ("*italic(t[p])*")"), y = bquote("Duration ("*italic(d[t])*")"), fill = "I(t) Peak", title = "",
-                        subtitle = bquote("Intervention" ~ italic(c[min])~"="~0.75))
-        p2 <- p2 + labs(x = bquote("Trigger ("*italic(t[p])*")"), y = bquote("Duration ("*italic(d[t])*")"), fill = "Attack\nRate", title = "",
-                        subtitle = bquote("Intervention" ~ italic(c[min])~"="~0.75))
+        if(parms["scen"] == 1){
+          p1 <- p1 + labs(x = bquote("Trigger ("*italic(t[p])*")"), y = bquote("Relative Duration ("*italic(d[t])*")"), fill = "I(t) Peak", title = "",
+                          subtitle = bquote("Intervention" ~ italic(c[min])~"="~0.75)) + scale_y_continuous(expand = c(0,0), labels = formatter2)
+          p2 <- p2 + labs(x = bquote("Trigger ("*italic(t[p])*")"), y = bquote("Relative Duration ("*italic(d[t])*")"), fill = "Attack\nRate", title = "",
+                          subtitle = bquote("Intervention" ~ italic(c[min])~"="~0.75)) + scale_y_continuous(expand = c(0,0), labels = formatter2)
+          
+        } else { 
+          p1 <- p1 + labs(x = bquote("Trigger Point ("*italic(t[p])*")"), y = bquote("Duration ("*italic(d[t])*")"), fill = "I(t) Peak", title = "",
+                          subtitle = bquote("Intervention" ~ italic(c[min])~"="~0.75)) + 
+            scale_y_continuous(expand = c(0,0))
+          p2 <- p2 + labs(x = bquote("Trigger Point ("*italic(t[p])*")"), y = bquote("Duration ("*italic(d[t])*")"), fill = "Attack\nRate", title = "",
+                          subtitle = bquote("Intervention" ~ italic(c[min])~"="~0.75)) + 
+            scale_y_continuous(expand = c(0,0))
+        }
       }
       
       assign(paste0("p",1,"peak",c(0, 5, 1)[t]), p1)
