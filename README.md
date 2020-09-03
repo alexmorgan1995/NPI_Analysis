@@ -1,6 +1,6 @@
 # Modelling Social Distancing Measures for COVID-19 Epidemic Control
 
-Repository for R code used to model social distancing measures **WORK IN PROGRESS**.
+Repository for R code used to model non-pharmaceutical interventions on a simulated UK COVID-19 outbreak. Modelled in the context of optimising NPIs.
 
 ## Running the Code
 ### R 
