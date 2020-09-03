@@ -11,7 +11,7 @@ The analysis has been split into R files relating to the single intervention, mu
 
 ## Navigating the Repository 
 ### R
-R code can be found in the `Enhanced Shielding` folder and is organised according to the figures found in the main text and the supplementary material **WORK IN PROGRESS**. Current R code is available for:
+R code is organised according to the figures found in the main text and the supplementary material. Current R code is available for:
 
 * **Single Intervention Analysis** - Modelling the effect of a single SDM intervention - `multi_5_Scenario_Run_FINAL.R`.
 	* Baseline trajectory plots - Figure 1A.
