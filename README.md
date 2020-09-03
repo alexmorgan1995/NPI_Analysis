@@ -1,4 +1,4 @@
-# Modelling Social Distancing Measures for COVID-19 Epidemic Control
+# Optimising time-limited non-pharmaceutical interventions for COVID-19 outbreak control.
 
 Repository for R code used to model non-pharmaceutical interventions on a simulated UK COVID-19 outbreak. Modelled in the context of optimising NPIs.
 
