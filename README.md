@@ -29,7 +29,7 @@ R code is organised according to the figures found in the main text and the supp
 	* Exploring the effect of an E compartment on model dynamics.
 	* Exploring optimising intervention 1, followed by a constant reduction to beta(t) - representative of a later introduction of sustainable intervention measures.
 
-Old/previous deprecated code can be found in the `old` folder. 
+Old/previous deprecated code can be found in the `Old` folder. 
 
 ## Programs and Packages Used
 COVID-19 modelling code was implemented using R (3.6.2) and R-Studio. ODEs were solved using the `desolve` (1.27.1) package in R. Plotting in R was carried out using the `ggplot2` package (3.3.0). Dataframe manipulation was performed using `reshape2` (1.4.4). Finalised plot output was performed using `ggpubr` (0.2.4), `ggarrange` () and `Cairo` (1.5-10) packages. 
