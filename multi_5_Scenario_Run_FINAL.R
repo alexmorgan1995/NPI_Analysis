@@ -5,10 +5,13 @@ setwd("C:/Users/amorg/Documents/PhD/nCoV Work/Figures/WriteUpAnalysis")
 start_time <- Sys.time()
 
 # Model Functions ----------------------------------------------------------
+#Function for the generation time - a function of R0 and the doubling time
 GenTime <- function(T2, R0) {
   G = T2 * ((R0-1)/log(2))
   return(G)
 }
+
+#Function describing beta(t) for the 5 scenarios
 
 combbetamult <- function(scen, time, tstart1, t_dur1, tstart2, t_dur2, cmin1, cmin2) {
   gamma <- 1/GenTime(3, 2.8)
@@ -66,7 +69,7 @@ combbetamult <- function(scen, time, tstart1, t_dur1, tstart2, t_dur2, cmin1, cm
 
 plot(seq(0,365),combbetamult(3, seq(0,365), 52, 6*7, 20, 6*7, 0.4, 1))
 
-#SIR set of ODEs
+#Set of ODEs for an SIR model with beta(t)
 SIRmulti <- function(time, state, parameters) {
   with(as.list(c(state, parameters)), {
     beta <- combbetamult(scen, time, tstart1, t_dur1, tstart2, t_dur2, cmin1, cmin2)
@@ -82,11 +85,9 @@ SIRmulti <- function(time, state, parameters) {
 
 # Multiple Intervention Case Study - Trajectory ----------------------------------------
 
-# Run the Model
-
+#Initial conditions and parameter values
 init <- c(S = 0.99999, I = 0.00001, R = 0, C = 0)
 times <- seq(0,400,by = 1)
-
 parms = c(gamma = 1/GenTime(3, 2.8),
           scen = 0,
           tstart1 = 52,
@@ -96,6 +97,7 @@ parms = c(gamma = 1/GenTime(3, 2.8),
           cmin1 = 0.4,
           cmin2 = 0.4)
 
+#Empty list for data storage
 datalist <- list()
 
 for(j in 1:length(seq(1,5))) {
