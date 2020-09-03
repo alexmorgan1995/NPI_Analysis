@@ -25,7 +25,7 @@ R code can be found in the `Enhanced Shielding` folder and is organised accordin
 	* Single-parameter sensitivity heatmap analyses - Exploring c_min.
 	* Multi-parameter sensitivity heatmap analyses - Exploring d_t.
 
-* **Supplementary Material for SEIR model example and optimising NPIs and sustainable control measures ** - `SUPPLEMENTARY_5_Scenario_conreduc_SEIR.R`.
+* **Supplementary Material for SEIR model example and optimising NPIs + sustainable control measures** - `SUPPLEMENTARY_5_Scenario_conreduc_SEIR.R`.
 	* Exploring the effect of an E compartment on model dynamics.
 	* Exploring optimising intervention 1, followed by a constant reduction to beta(t) - representative of a later introduction of sustainable intervention measures.
 
