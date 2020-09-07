@@ -4,8 +4,13 @@ Repository for R code used to model non-pharmaceutical interventions on a simula
 
 ## Running the Code
 ### R 
-R code should run without further modification (after installing pre-requisite packages). 
-The chosen directory where plots are saved can be altered by changing the `setwd()` function at the top of each script. Plots are automatically saved in the chosen working directory if each script is run. 
+R code should run without further major modification (after installing pre-requisite packages). 
+
+**Important** - Note that it is necessary to change `setwd` at the top of every script according to the user's preference.
+
+The chosen directory where plots are saved can be altered by changing the `setwd()` function at the top of each script. Plots are automatically saved in the chosen working directory if each script is run.
+
+**Important** - Note that supplementary code requires a folder labelled `supplementary` to be created in the working directory (defined by 'setwd()'). Alternatively 'setwd' can be altered for supplementary analysis and customised by the user. 
 
 The analysis has been split into R files relating to the single intervention, multi-intervention and figures for the supplementary material:
 
