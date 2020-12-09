@@ -270,10 +270,10 @@ for(i in 1:3) {
     
     #Common plotting for peak prevalence and attack rate plots
     p1 <- ggplot(datasens, aes(x = sensval, y = peak, col = group)) + geom_line(size = 1.02) + theme_bw() +
-      scale_y_continuous(limits = c(0,0.150), expand = c(0,0))  
+      scale_y_continuous(limits = c(0,0.150), expand = c(0,0)) + scale_color_manual(values=c("#440154FF", "#3B528BFF", "#21908CFF", "#5DC863FF", "#FDE725FF"))
     
     p2 <- ggplot(datasens, aes(x = sensval, y = cum, col = group)) + geom_line(size = 1.02) + theme_bw() + 
-      scale_y_continuous(limits = c(0,1),expand = c(0,0))
+      scale_y_continuous(limits = c(0,1),expand = c(0,0)) + scale_color_manual(values=c("#440154FF", "#3B528BFF", "#21908CFF", "#5DC863FF", "#FDE725FF"))
     
     #Plot specific alterations to each figure pane
     if(names(sens)[i] == "tstart") {
