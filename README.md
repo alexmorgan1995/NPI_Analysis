@@ -45,7 +45,7 @@ R code is organised according to the figures found in the main text and the supp
 	* We explored 3 average durations of immunity - 3, 6 and 12 months. 
 
 ## Programs and Packages Used
-COVID-19 modelling code was implemented using R (3.6.2) and R-Studio. ODEs were solved using the `desolve` (1.27.1) package in R. Plotting in R was carried out using the `ggplot2` package (3.3.0). Dataframe manipulation was performed using `reshape2` (1.4.4). Finalised plot output was performed using `ggpubr` (0.2.4), `ggarrange` () and `Cairo` (1.5-10) packages. 
+COVID-19 modelling code was implemented using R (3.6.2) and R-Studio. ODEs were solved using the `desolve` (1.27.1) package in R. Plotting in R was carried out using the `ggplot2` package (3.3.0). Dataframe manipulation was performed using `reshape2` (1.4.4). Finalised plot output was performed using `ggpubr` (0.2.4), `ggarrange` and `Cairo` (1.5-10) packages. 
 
 ## Acknowledgements 
 All analysis were performed by members and affiliates of Epigroup, University of Edinburgh: 
