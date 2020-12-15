@@ -20,13 +20,13 @@ R code is organised according to the figures found in the main text and the supp
 
 * **Single Intervention Analysis** - Modelling the effect of a single SDM intervention - `multi_5_Scenario_Run_FINAL.R`.
 	* Baseline trajectory plots - Figure 1A.
-		*Same code was used to plot Figure S1 (keeping dt constant and altering cmin). 
+		* Same code was used to plot Figure S1 (keeping dt constant and altering cmin). 
 	* Single parameter sensitivity analyses - Figure 1B.
  	* Multi-parameter sensitivity heatmap analysis - Figure 2. 
  
 * **Multiple/Double Intervention Analysis** - Modelling the effect of a two SDM interventions - `multi_5_Scenario_Run_FINAL.R`.
 	* Baseline double intervention trajectory plots - Figure S5.
-		*Same code was used to plot Figure S2 (keeping dt1/dt2 constant and altering cmin1/cmin2). 
+		* Same code was used to plot Figure S2 (keeping dt1/dt2 constant and altering cmin1/cmin2). 
 	* Multi-parameter sensitivity heatmap analyses (Trigger point 1(t_p1)/ Trigger point 2(t_p1) and Magnitude of intervention 1 (c_min1)/intervention 2 (c_min1)) - Figure 3. 
  
 * **Supplementary Material for Single and Multiple Intervention Analysis** - `SUPPLEMENTARY_5_Scenario.R`.
