@@ -356,7 +356,7 @@ combplotsenscum <- ggarrange(scensens[[1]][[2]],scensens[[2]][[2]],scensens[[3]]
 ggsave(combplotsenspeak, filename = "cmin_Heat_5_sensitivity_peak.png", dpi = 300, type = "cairo", width = 13, height = 16, units = "in")
 ggsave(combplotsenscum, filename = "cmin_Heat_5_sensitivity_cum.png", dpi = 300, type = "cairo", width = 13, height = 16, units = "in")
 
-# Multiple Optimisations - Trigger + Length --------------------------------------------------
+# Multiple Optimisations (tp1/tp2) - Duration Sensitivity Analysis --------------------------------------------------
 
 #Parameter range for the trigger and length parameter sensitivity analysis
 lengthdata <- expand.grid("int1length" = seq(3,9, by = 3), "int2length" = seq(3,9, by = 3)) #exploring dt as a parameter for scenario 1
@@ -482,7 +482,7 @@ for (z in 1:5) { #Iterate for every considered scenario
   
 }
 
-# Multiple Optimisations - CMIN + Length --------------------------------------------------
+# Multiple Optimisations (cmin1/cmin2) - Duration Sensitivity Analysis  --------------------------------------------------
 
 #Parameter range for the trigger and length parameter sensitivity analysis
 lengthdata <- expand.grid("int1length" = seq(3,9, by = 3), "int2length" = seq(3,9, by = 3)) #exploring dt as a parameter for scenario 1

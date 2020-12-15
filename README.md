@@ -20,21 +20,29 @@ R code is organised according to the figures found in the main text and the supp
 
 * **Single Intervention Analysis** - Modelling the effect of a single SDM intervention - `multi_5_Scenario_Run_FINAL.R`.
 	* Baseline trajectory plots - Figure 1A.
+		*Same code was used to plot Figure S1 (keeping dt constant and altering cmin). 
 	* Single parameter sensitivity analyses - Figure 1B.
- 	* Multi-parameter sensitivity heatmap analyses - Figure 2. 
+ 	* Multi-parameter sensitivity heatmap analysis - Figure 2. 
  
 * **Multiple/Double Intervention Analysis** - Modelling the effect of a two SDM interventions - `multi_5_Scenario_Run_FINAL.R`.
-	* Multi-parameter sensitivity heatmap analyses (Trigger date (t_p)/magnitude (c_min)/length (d_t)) - Figure 3. 
+	* Baseline double intervention trajectory plots - Figure S5.
+		*Same code was used to plot Figure S2 (keeping dt1/dt2 constant and altering cmin1/cmin2). 
+	* Multi-parameter sensitivity heatmap analyses (Trigger point 1(t_p1)/ Trigger point 2(t_p1) and Magnitude of intervention 1 (c_min1)/intervention 2 (c_min1)) - Figure 3. 
  
 * **Supplementary Material for Single and Multiple Intervention Analysis** - `SUPPLEMENTARY_5_Scenario.R`.
-	* Single-parameter sensitivity heatmap analyses - Exploring c_min.
-	* Multi-parameter sensitivity heatmap analyses - Exploring d_t.
+	* Beta plots over time for the 5 intervention scenarios - Supplementary Table .
+	* Single-parameter sensitivity heatmap analyses for all 5 scenarios - Exploring c_min - Figure S3-4
+	* Multi-parameter sensitivity heatmap analyses tp1/tp2 and cmin1/cmin2 for all 5 scenarios - Exploring d_t - Figure S6-10 and Figure S11-15.
 
-* **Supplementary Material for SEIR model example and optimising NPIs + sustainable control measures** - `SUPPLEMENTARY_5_Scenario_conreduc_SEIR.R`.
-	* Exploring the effect of an E compartment on model dynamics.
-	* Exploring optimising intervention 1, followed by a constant reduction to beta(t) - representative of a later introduction of sustainable intervention measures.
+* **Supplementary Material for optimising NPIs + sustainable control measures** - `SUPPLEMENTARY_conreduc.R`.
+	* Exploring optimisation of an intervention, in the context of a later, constant reduction to beta(t) - representative of an introduction of sustainable intervention measures indefinitely - Figure S16.
 
-Old/previous deprecated code can be found in the `Old` folder. 
+* **Supplementary Material for SEIR model** - `SUPPLEMENTARY_SEIR.R`.
+	* Exploring the effect of an E compartment on model dynamics, both trajectory plots and the tp1/tp2 sensitivity analysis - Figure S17. 
+
+* **Supplementary Material for SIRS model** - `SUPPLEMENTARY_SIRS.R`.
+	* Exploring the effect of waning immunity on model dynamics, both the trajectory plot and the Scenario 1 sensitivity analysis (tp/dt) - Figure S18.  
+	* We explored 3 average durations of immunity - 3, 6 and 12 months. 
 
 ## Programs and Packages Used
 COVID-19 modelling code was implemented using R (3.6.2) and R-Studio. ODEs were solved using the `desolve` (1.27.1) package in R. Plotting in R was carried out using the `ggplot2` package (3.3.0). Dataframe manipulation was performed using `reshape2` (1.4.4). Finalised plot output was performed using `ggpubr` (0.2.4), `ggarrange` () and `Cairo` (1.5-10) packages. 
