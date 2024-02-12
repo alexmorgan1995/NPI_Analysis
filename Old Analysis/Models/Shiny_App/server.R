@@ -1,0 +1,82 @@
+library("deSolve"); library("ggplot2"); library("shiny"); library("rsconnect")
+
+Server <- function(input, output) {
+  
+  GenTime <- function(T2, R0) {
+    G = T2 * ((R0-1)/log(2))
+    return(G)
+  }
+  
+  betastatdecrease <- function(time, int_timestart, int_timeend, beta_base, beta_int) {
+    ifelse((time >= int_timestart & time <= int_timeend),
+           beta_int,
+           beta_base)
+  }
+  
+  SIR1 <- function(time, state, parameters) {
+    with(as.list(c(state, parameters)), {
+      dS = - betastatdecrease(time,int_timestart,int_timeend, beta_base, beta_int)*S*I
+      dI = betastatdecrease(time,int_timestart,int_timeend, beta_base, beta_int)*S*I - mu*I
+      dR = mu*I 
+      dC = betastatdecrease(time,int_timestart,int_timeend, beta_base, beta_int)*S*I
+      return(list(c(dS,dI,dR, dC)))
+    })
+  }
+
+  output$Plot1 <- renderPlot({
+    times <- seq(0,365, by = 1)
+    init <- c(S = 0.9999, I = 0.0001, R = 0, C = 0)
+    parms = c(mu = 1/(GenTime(input$doublingtime, 2.4)), 
+              int_timestart = input$Time, 
+              int_timeend = input$Time+(input$LenInt*7), 
+              beta_base = input$R0*(1/(GenTime(input$doublingtime,2.4))),
+              beta_int = (input$R0*(1/(GenTime(input$doublingtime,2.4)))*(1-input$ReducBeta)))
+    out <- data.frame(ode(y = init, func = SIR1, times = times, parms = parms))
+    stats <- data.frame("stats" = c("TimePeak",  "FracInfPeak", "Infected", "Susceptible"),
+                        "value" = as.numeric(c(out[,1][which(out[,3] == max(out[,3]))], out[,3][which(out[,3] == max(out[,3]))],
+                                               max(out[,5])*100, (1-max(out[,5]))*100)),
+                        "dummy" = c(1))
+    
+    ggplot(out, aes(x = time, y = (I)*100)) + geom_line(size = 1.05) +
+      labs(x ="Time", y = "Percentage of Population Infected") + scale_y_continuous(limits = c(0,40),  expand = c(0,0)) +
+      annotate("rect", xmin = as.numeric(parms[2]), 
+               xmax = as.numeric(parms[3]), ymin = 0, ymax = 40, fill = "darkred", alpha = .3) +
+      geom_vline(xintercept= stats$value[stats$stats == "TimePeak"], size = 1.1, color = "darkred") + 
+      geom_text(aes(x = stats$value[stats$stats == "TimePeak"] + 15, 
+                    label= signif(stats$value[stats$stats == "FracInfPeak"], digits = 3)*100, y= (stats$value[stats$stats == "FracInfPeak"]*100)  + 5),
+                colour = "darkred", show.legend=FALSE, size = 7) + theme(plot.margin=unit(c(0.5,0.5,0.5,0.5),"cm"))
+  })
+  
+  
+  output$Plot2 <- renderPlot({
+    betaplot <- data.frame("Times" = seq(0,365, by = 1), 
+                           "Beta" = betastatdecrease(seq(0,365, by = 1), 
+                                                     input$Time, 
+                                                     input$Time+(input$LenInt*7),
+                                                     input$R0*(1/(GenTime(input$doublingtime,2.4))),
+                                                     input$R0*(1/(GenTime(input$doublingtime,2.4)))*(1-input$ReducBeta)))
+    ggplot(betaplot, aes(x = Times, y = Beta)) + geom_line(size = 1.05, color = "darkred") +
+      labs(x ="Time", y = "Beta") + scale_y_continuous(limits = c(0,1) ,  expand = c(0,0))
+  })
+  
+  
+  output$progressBox <- renderValueBox({
+    times <- seq(0,365, by = 1)
+    init <- c(S = 0.9999, I = 0.0001, R = 0, C = 0)
+    parms = c(mu = 1/(GenTime(input$doublingtime,2.4)), 
+              int_timestart = input$Time, 
+              int_timeend = input$Time+(input$LenInt*7), 
+              beta_base = input$R0*(1/(GenTime(input$doublingtime,2.4))),
+              beta_int = (input$R0*(1/(GenTime(input$doublingtime,2.4)))*(1-input$ReducBeta)))
+    out <- data.frame(ode(y = init, func = SIR1, times = times, parms = parms))
+    
+    stats <- signif(max(out[,5])*100, digits = 3)
+    
+    valueBox(paste0(stats , "%"), 
+             "Total Infected (%) during Outbreak", icon = icon("list"),
+      color = "red"
+    )
+  })
+  
+  
+}
